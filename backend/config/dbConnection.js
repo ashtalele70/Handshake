@@ -1,8 +1,8 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const config = require('config');
 
-const db = process.env.DB_URL;
-console.log(db);
+const db = config.get('DB_URL');
+//console.log(db);
 
 const opts = {
   define: {
@@ -12,17 +12,10 @@ const opts = {
   },
 };
 
-const sequelize = new Sequelize(db, opts);
-
-const connectDB = () => {
-  console.log('connectDB ');
+const connectDB = async () => {
   try {
-    sequelize
-      .authenticate()
-      .then(console.log('Connection has been established successfully.'))
-      .catch((err) => {
-        console.log('Unable to connect to the database:', err);
-      });
+    await new Sequelize(db, opts).authenticate();
+    console.log('Connection has been established successfully')
   } catch (err) {
     console.error(err.message);
     process.exit(1);
@@ -30,4 +23,3 @@ const connectDB = () => {
 };
 
 module.exports.connectDB = connectDB;
-module.exports.sequelize = sequelize;
