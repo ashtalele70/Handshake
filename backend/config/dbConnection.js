@@ -2,24 +2,22 @@ const { Sequelize } = require('sequelize');
 const config = require('config');
 
 const db = config.get('DB_URL');
-//console.log(db);
-
 const opts = {
-  define: {
-    // prevent sequelize from pluralizing table names
-    freezeTableName: true,
-    timestamps: false,
-  },
+	define: {
+		// prevent sequelize from pluralizing table names
+		freezeTableName: true,
+		timestamps: false,
+	},
 };
 
-const connectDB = async () => {
-  try {
-    await new Sequelize(db, opts).authenticate();
-    console.log('Connection has been established successfully')
-  } catch (err) {
-    console.error(err.message);
-    process.exit(1);
-  }
-};
 
-module.exports.connectDB = connectDB;
+const connectDB = new Sequelize(db, opts);
+
+const STUDENT = require('../models/Student')(connectDB, Sequelize);
+const STUDENT_PROFILE = require('../models/StudentProfile')(connectDB, Sequelize);
+const STUDENT_EDUCATION = require('../models/Education')(connectDB, Sequelize);
+
+//connectDB.sync({ alter: true });
+connectDB.sync({ alter: false });
+
+module.exports = { STUDENT, STUDENT_PROFILE, STUDENT_EDUCATION };
