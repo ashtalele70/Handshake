@@ -28,25 +28,21 @@
 //   PROFILE_PICTURE: { type: Sequelize.BLOB },
 //   RESUME: { type: Sequelize.STRING },
 // });
-const STUDENT_PROFILE = require('./StudentProfile');
+//const STUDENT_PROFILE = require('./StudentProfile');
 //const { STUDENT_PROFILE } = require('../config/dbConnection');
 
 module.exports = (sequelize, DataTypes) => {
-	const STUDENT = sequelize.define('STUDENT', {
-		FIRST_NAME: { type: DataTypes.STRING },
-		LAST_NAME: { type: DataTypes.STRING },
-		DOB: { type: DataTypes.DATE },
+	const COMPANY = sequelize.define('COMPANY', {
+		COMPANY_NAME: { type: DataTypes.STRING },
+		DESCRIPTION: { type: DataTypes.DATE },
 		PASSWORD: { type: DataTypes.STRING },
 		CITY: { type: DataTypes.STRING },
 		STATE: { type: DataTypes.STRING },
 		COUNTRY: { type: DataTypes.STRING },
-		CAREER_OBJECTIVE: { type: DataTypes.STRING },
+		COMPANY_PRINCIPLE: { type: DataTypes.STRING },
 		EMAIL_ID: { type: DataTypes.STRING, unique: true },
 		PHONE_NUMBER: { type: DataTypes.STRING, unique: true },
-		SKILLSET: { type: DataTypes.JSON },
 		PROFILE_PICTURE: { type: DataTypes.STRING },
-		RESUME: { type: DataTypes.STRING },
-		COLLEGE_NAME: { type: DataTypes.STRING, required: true },
 	});
 	// STUDENT.associate = function (models) {
 	// 	STUDENT.hasOne(models.STUDENT_PROFILE);
@@ -59,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
 
 	// }
 
-	return STUDENT;
+	return COMPANY;
 };
 
 // STUDENT.hasOne(STUDENT_PROFILE);
