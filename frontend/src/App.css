@@ -330,7 +330,7 @@
 	margin-right: 0.6rem;
   }
   
-  /* Landing Page */
+  /* Landing Page
   .landing {
 	position: relative;
 	background: url('./img/showcase.jpg') no-repeat center center/cover;
@@ -340,7 +340,7 @@
 	position: relative;
 	background: url('./img/showcase1.jpg') no-repeat center center/cover;
 	height: 100vh;
-  }
+  } */
   
   .landing-inner {
 	color: #fff;

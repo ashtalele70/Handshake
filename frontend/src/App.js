@@ -1,38 +1,22 @@
-import React, { Fragment, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
-import Landing from './components/layout/Landing';
-import Routes from './components/routing/Routes';
-
-// Redux
-import { Provider } from 'react-redux';
-import store from './store';
-import { loadUser } from './actions/auth';
-import setAuthToken from './utils/setAuthToken';
-
+import React, { Component } from 'react';
 import './App.css';
+import Main from './Components/Main';
+import {BrowserRouter} from 'react-router-dom';
 
-const App = () => {
-	useEffect(() => {
-		if (localStorage.token) {
-			setAuthToken(localStorage.token);
-			store.dispatch(loadUser());
-		}
-	}, []);
+class App extends Component {
+  
+  render() {
+    return (
+    	<BrowserRouter>
+        <div>
+          {/* App Component Has a Child Component called Main*/}
+          <Main/>
+        </div>
+    	</BrowserRouter>
+    );
+  }
+}
+//Export the App component so that it can be used in index.js
 
-	return (
-		<Provider store={store}>
-			<Router>
-				<Fragment>
-					<Navbar />
-					<Switch>
-						<Route exact path="/" component={Landing} />
-						<Route component={Routes} />
-					</Switch>
-				</Fragment>
-			</Router>
-		</Provider>
-	);
-};
 
 export default App;
