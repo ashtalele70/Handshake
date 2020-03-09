@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-console */
 const express = require('express');
 
@@ -9,17 +8,16 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 
-const { STUDENT } = require('../config/dbConnection');
+const { COMPANY } = require('../config/dbConnection');
 
 
-// @route     GET /auth
+// @route     GET /authc
 // @desc      Get logged in user
 // @access    Private
 router.get('/', auth, async (req, res) => {
-  // eslint-disable-next-line no-console
   console.log(req.body);
   try {
-    const user = await STUDENT.findOne({
+    const user = await COMPANY.findOne({
       where: {
         EMAIL_ID: req.body.EMAIL_ID,
       },
@@ -33,7 +31,7 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// @route     POST /auth
+// @route     POST /authc
 // @desc      Auth user & get token
 // @access    Public
 router.post(
@@ -42,6 +40,7 @@ router.post(
     check('EMAIL_ID', 'Please include a valid email').isEmail(),
     check('PASSWORD', 'Password is required').exists(),
   ],
+  // eslint-disable-next-line consistent-return
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -49,14 +48,14 @@ router.post(
     }
 
     const { EMAIL_ID, PASSWORD } = req.body;
-
+	
     try {
-      const user = await STUDENT.findOne({
+      const user = await COMPANY.findOne({
         where: {
           EMAIL_ID,
         },
       });
-      console.log('asdsads', user);
+       console.log('asdsads', user);
       if (!user) {
         return res.status(400).json({ msg: 'User does not exists' });
       }
@@ -83,12 +82,13 @@ router.post(
 		  res.cookie('cookie', 'cookie', { maxAge: 900000, httpOnly: false, path: '/' });
           res.cookie('cookieemail', EMAIL_ID, { maxAge: 900000, httpOnly: false, path: '/' });
           res.cookie('cookiename', user.FIRST_NAME, { maxAge: 900000, httpOnly: false, path: '/' });
-          res.status(200).json({ token, username: EMAIL_ID, name: user.FIRST_NAME });
+          res.json({ token, username: EMAIL_ID, name: user.COMPANY_NAME });
         },
       );
-      console.log(EMAIL_ID);
-      console.log('Success studnet login');
+
+      console.log('Success company login');
     } catch (err) {
+      console.log(err);
       console.error(err);
       res.status(500).send('Server Error');
     }

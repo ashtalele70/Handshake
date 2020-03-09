@@ -9,22 +9,21 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 // const auth = require('../middleware/auth');
 
-const { STUDENT } = require('../config/dbConnection');
+const { COMPANY } = require('../config/dbConnection');
 
-// @route     POST /students
+// @route     POST /companies
 // @desc      Regiter a user
 // @access    Public
 router.post(
   '/',
   [
-    check('FIRST_NAME').isString(),
-    check('LAST_NAME').isString(),
+    check('COMPANY_NAME').isString(),
+    check('LOCATION').isString(),
     check('EMAIL_ID', 'Please include a valid email').isEmail(),
     check(
       'PASSWORD',
       'Please enter a password with 4 or more characters',
     ).isLength({ min: 3 }),
-    check('COLLEGE_NAME').isString(),
   ],
 
   // eslint-disable-next-line consistent-return
@@ -32,22 +31,24 @@ router.post(
     console.log(res.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+		
       return res.status(400).json({ errors: errors.array() });
     }
 
     const {
-      FIRST_NAME, LAST_NAME, EMAIL_ID, PASSWORD, COLLEGE_NAME,
+      COMPANY_NAME, EMAIL_ID, PASSWORD, LOCATION,
     } = req.body;
 
-	console.log("called");
+
     try {
       console.log(EMAIL_ID);
-      let user = await STUDENT.findOne({
+      let user = await COMPANY.findOne({
         where: {
           EMAIL_ID,
         },
       });
       if (user) {
+		console.log("already present");
         return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
       }
 
@@ -58,13 +59,12 @@ router.post(
       });
 
       // console.log("gravator", avator);
-      user = new STUDENT({
-        FIRST_NAME,
-        LAST_NAME,
+      user = new COMPANY({
+        COMPANY_NAME,
         EMAIL_ID,
         PASSWORD,
         PROFILE_PICTURE: avator,
-        COLLEGE_NAME,
+        LOCATION,
       });
 
       const salt = await bcrypt.genSalt(10);

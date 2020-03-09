@@ -3,8 +3,8 @@
 	--primary-color: #000;
 	--dark-color: #343a40;
 	--light-color: #f4f4f4;
-	--danger-color: #dc3545;
-	--success-color: #28a745;
+	/* --danger-color: #dc3545; */
+	/* --success-color: #28a745; */
   }
   
   * {
@@ -184,7 +184,7 @@
   .bg-danger,
   .badge-danger,
   .alert-danger {
-	background: var(--danger-color);
+	/* background: var(--danger-color); */
 	color: #fff;
   }
   

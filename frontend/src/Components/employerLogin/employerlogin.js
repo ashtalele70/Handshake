@@ -2,12 +2,11 @@ import React, {Component} from 'react';
 import cookie from 'react-cookies';
 import {Redirect} from 'react-router';
 import NavBar from "../NavBar";
-import './studentlogin.css';
+import './employerlogin.css';
 import { connect } from 'react-redux'; 
 import axios from 'axios';
 import {rooturl} from '../../config';
-//import { signup, signin } from '../../Actions/loginAction';
-import { signin } from '../../Actions/loginAction';
+import { signup, signin } from '../../Actions/loginAction';
 
 function mapStateToProps(state){
     return {
@@ -17,19 +16,18 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch) {
     return {
-        // signup: (signupdata) => dispatch(signup(signupdata)),
+        //signup: (signupdata) => dispatch(signup(signupdata)),
         signin: (signindata) => dispatch(signin(signindata))
     };
 }
 
-class UserLogin extends Component{
+class EmployerLogin extends Component{
     constructor(props){
         super(props);
         this.state = {
             username : "",
             password : "",
-            logincheck : "",
-            errorMessage : ""
+            logincheck : ""
         }
         this.changeHandler = this.changeHandler.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -41,37 +39,38 @@ class UserLogin extends Component{
         })
     }
 
-
-
     onSubmit(e){
         e.preventDefault();
-        if (this.state.username == "" || this.state.password == "") {
+        if (this.state.email == "" || this.state.password == "") {
             alert("Username and Password cannot be empty");
         }
         else {
             const data = {
-                EMAIL_ID : this.state.username,
+                EMAIL_ID : this.state.email,
                 PASSWORD : this.state.password
             }
             axios.defaults.withCredentials = true;
+            
 
-            axios.post(rooturl + '/auth', data)
+            axios.post(rooturl + '/authc', data)
             .then(response => {
                 console.log("Response Status: " + response.status);
                 if(response.status === 200){
+                    console.log("Response Status: " + response.data);
                     localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('cookie', "studentcookie");
+                    localStorage.setItem('cookie', "employercookie");
                     localStorage.setItem('cookieemail', response.data.username);
                     localStorage.setItem('cookiename', response.data.name);
-
+                    // localStorage.setItem('cookierestname', response.data.responseMessage.restname);
                     console.log(response.data.responseMessage);
                     console.log(response.data.token);
+
                     var signindata = {
                         signinstatus : true,
                         signinmessage : response.data.name + " signed in"
                     }
 					this.props.signin(signindata);
-					this.props.history.push('/StudentDashboard');
+					this.props.history.push('/EmployerDashboard');
                     // this.setState({
                     //     logincheck : true
                     // })
@@ -82,7 +81,7 @@ class UserLogin extends Component{
                     }
                     this.props.signin(signindata);
                     // this.setState({
-                    //     logincheck : false,
+                    //     logincheck : false
                     // })
                 }
             })
@@ -95,16 +94,23 @@ class UserLogin extends Component{
                 this.props.signin(signindata);
                 // this.setState({
                 //     logincheck : false
-				// })
-				
-                alert("Login failed. Try again!");
+                // })
+                console.log(this.state.logincheck);
+                alert("Login Failed. Please try again!");
             })
         }
     }
 
     render() {
         let redirectVar = null;
-        if (localStorage.getItem('token') || cookie.load("cookie")) {
+        // if (this.state.logincheck == true) {
+        //     console.log("Checking Login")
+        //     redirectVar = <Redirect to="/EmployerDashboard" />;
+        // } else {
+        //     console.log("Check did not succeed")
+		// }
+		
+		if (localStorage.getItem('token') || cookie.load("cookie")) {
             redirectVar = <Redirect to="/" />;
         }
 
@@ -117,23 +123,23 @@ class UserLogin extends Component{
                 <div class="card card-signin flex-row my-5">
                 
                 <div class="card-body">
-                <h5 class="card-title text-center">Student Login</h5>
+                <h5 class="card-title text-center">Employer Login</h5>
                 <form class="form-signin">
                     
                     
                     <div class="form-label-group">
-                    <input type="email" id="email" class="form-control"  onChange = {this.changeHandler} name="username" placeholder="Email address" required/>
+                    <input type="email" name = "email" id="email" onChange = {this.changeHandler} class="form-control" placeholder="Email address" required/>
                     <label for="email">Email address</label>
                     </div>
                     <hr/>
                     <div class="form-label-group">
-                    <input type="password" id="password" class="form-control" onChange = {this.changeHandler} name="password" placeholder="Password" required/>
+                    <input type="password" name = "password" id="password" onChange = {this.changeHandler} class="form-control" placeholder="Password" required/>
                     <label for="password">Password</label>
                     </div>              
                     
-                    </form>
-                
-                <button class="btn btn-lg text-uppercase" type="submit" onClick = {this.onSubmit}>Login</button>
+                    <button class="btn btn-lg btn-primary btn-block text-uppercase" onClick = {this.onSubmit} type="submit">Login</button>
+
+                </form>
                 </div>
                 </div> 
                 </div>
@@ -145,4 +151,4 @@ class UserLogin extends Component{
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserLogin);
+export default connect(mapStateToProps, mapDispatchToProps)(EmployerLogin);

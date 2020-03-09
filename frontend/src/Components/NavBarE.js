@@ -48,13 +48,13 @@ class NavBar extends Component{
 				<div className='landing-inner'>
 					<h1 className='x-large'>Handshake</h1>
 					<h2 className='large'>
-						The #1 way college students find job
+						Find your future leaders
          			</h2>
 					<div className='buttons'>
-						<Link to='/StudentSignUp' className='btn btn-primary'>
+						<Link to='/EmployerSignUp' className='btn btn-primary'>
 							Sign Up
             			</Link>
-						<Link to='/StudentLogin' className='btn btn-light'>
+						<Link to='/EmployerLogin' className='btn btn-light'>
 							Login
             			</Link>
 					</div>
