@@ -56,7 +56,7 @@ class StudentDashboard extends Component{
                     this.setState({
                         searchCheck : false
                     })
-                    console.log("No Items found");
+                    console.log("No Items found"); 
                 }
             })
     }
