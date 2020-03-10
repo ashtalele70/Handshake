@@ -95,12 +95,6 @@ class StudentDashboard extends Component{
         e.target.src = rooturl + '/uploads/download.png';
     }
 
-    // paginate = pageNumber => {
-    //     this.setState({
-    //         currentPage : pageNumber
-    //     })
-    // }
-    
 
 
 
@@ -201,11 +195,6 @@ class StudentDashboard extends Component{
                             {searchDetails}
                         </tbody>
                 </table>
-                {/* <Pagination 
-                    postsPerPage={this.state.postsPerPage}
-                    totalPosts={this.state.searchResults.length}
-                    paginate={this.paginate}
-                /> */}
             </div>
             
             </div>

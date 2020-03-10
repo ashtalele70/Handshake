@@ -79,7 +79,7 @@ class NavBarLogin extends Component{
 					<Nav.Link href="/StudentDashboard">Home</Nav.Link>
 					{/* <Nav.Link href="#link">Dashboard</Nav.Link> */}
 					<NavDropdown title="	" id="basic-nav-dropdown">
-						<NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
+						<NavDropdown.Item href="/StudentProfile">Profile</NavDropdown.Item>
 						<NavDropdown.Item href="#action/3.2">Job Posting</NavDropdown.Item>
 						<NavDropdown.Item href="#action/3.3">Student</NavDropdown.Item>
 						{/* <NavDropdown.Divider />

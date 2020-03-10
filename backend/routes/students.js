@@ -37,9 +37,8 @@ router.post(
 
     const {
       FIRST_NAME, LAST_NAME, EMAIL_ID, PASSWORD, COLLEGE_NAME,
-    } = req.body;
-
-	console.log("called");
+	} = req.body;
+	
     try {
       console.log(EMAIL_ID);
       let user = await STUDENT.findOne({
