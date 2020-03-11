@@ -1,205 +1,134 @@
-import React, {Component} from 'react';
-import cookie, { setRawCookie } from 'react-cookies';
-import {Redirect} from 'react-router';
-import {Link} from 'react-router-dom';
-import NavBarLogin from "../NavBarL";
-import "./studentdashboard.css";
+import React, { Component } from 'react';
+import { Container, Row, Col, Form, Button, Card} from 'react-bootstrap';
 import axios from 'axios';
+import { PATH } from '../../config';
+import { connect } from 'react-redux';
 import {rooturl} from '../../config';
+import NavBarLogin from "../NavBarL";
+import { showAllJobs, showFilterJobs } from '../../Actions/dashboardAction';
 
-class StudentDashboard extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            restname : "",
-            searchResults : [],
-            itemname : "",
-            searchCheck : "false",
-            cuisinesFilter : [],
-            option : "",
-            setLoading : false,
-            currentPage : 1,
-            postsPerPage : 5
-        }
-        this.changeHandler = this.changeHandler.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-        this.restaurantpage = this.restaurantpage.bind(this);
-        this.applyFilter = this.applyFilter.bind(this);
-    }
+const mapStateToProps = (state) => {
+    return {
+        alljobs: state.userDashboardData.alljobs,
+        filterjobs: state.userDashboardData.filterjobs
+    };
+}
 
-    changeHandler = (e) => {
-        this.setState({
-            [e.target.name] : e.target.value
-        })
-    }
-
-    onSubmit = (e) => {
-        e.preventDefault();
-            //console.log(this.state.itemname);
-            const data = {
-                itemname : this.state.itemname
-            }
-            console.log(data);
-            axios.defaults.headers.common["Authorization"] = localStorage.getItem("token") ? localStorage.getItem("token") : "";
-            axios.post(rooturl + '/UserDashboard', data)
-            .then(response => {
-                console.log("Response Status: " + response.status);
-                if(response.status === 200){
-                    this.setState({
-                        searchResults : response.data.responseMessage,
-                        searchCheck : true,
-                        cuisinesFilter : response.data.responseMessage,
-                        
-                    })
-                    console.log(this.state.searchResults, this.state.cuisinesFilter);
-                } else {
-                    this.setState({
-                        searchCheck : false
-                    })
-                    console.log("No Items found"); 
-                }
-            })
-    }
-
-    restaurantpage = (e) => {
-        e.preventDefault();
-        //console.log(e.target.value);
-        this.setState({
-            restname : e.target.value
-        })
-    }
-
-    applyFilter = (e) => {
-        e.preventDefault();
-        var filter = this.state.option;
-        if(filter == "All" || filter == ""){
-            this.setState({
-                searchResults : this.state.cuisinesFilter
-            })
-            console.log(this.state.searchResults);
-        } else {
-            var allResults = this.state.cuisinesFilter;
-            var filteredResults = allResults.filter(rest => {
-                return rest.cuisine == filter;
-            })
-            this.setState({
-                searchResults : filteredResults
-            })
-            console.log(this.state.searchResults);
-        }
-
-
-    }
-
-    defaultSrc = (e) => {
-        e.target.src = rooturl + '/uploads/download.png';
-    }
-
-
-
-
-    
-    render(){
-
-        const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
-        const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-        const currentPosts = this.state.searchResults.slice(indexOfFirstPost, indexOfLastPost);
-        console.log(this.state.searchResults.length);
-
-        var searchDetails = currentPosts.map(result => {
-                return(
-                    <tr>
-                    <td><img src={rooturl + '/uploads/' + result.restimg} style={{ height: 50, width: 50 }} onError={this.defaultSrc}/></td>
-                        <td>{result.restname}</td>
-                        <td>{result.cuisine}</td>
-                        <td><button value={result.restname} onClick={this.restaurantpage} class="btn btn-danger">View Restaurant</button></td>
-                    </tr>
-                );
-        });
-
-        
-
-        var cuisinesList = []
-        
-        var result;
-        for(result of this.state.cuisinesFilter){
-            if(cuisinesList.indexOf(result.cuisine) == -1){
-                console.log(result.cuisine);
-                cuisinesList.push(result.cuisine);
-            }
-        }
-        if(cuisinesList.length > 0){
-            console.log(cuisinesList);
-            var filterResults = cuisinesList.map((result)=> {
-                return(
-                    <option value={result}>{result}</option>
-                );
-            });
-        }
-        
-        
-
-        let redirectVar = null;
-        if(this.state.restname != ""){
-            localStorage.setItem('restname', this.state.restname);
-            redirectVar = <Redirect to = {{pathname: '/ViewRestaurant', state: { restname: this.state.restname }}}/>
-        }
-
-        return(
-            <div>
-            <NavBarLogin />
-            {redirectVar}
-            <div class="vertical-nav bg-danger" id="sidebar">
-            <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
-            <ul class="nav flex-column bg-white mb-0">
-                <li class="nav-item">
-                    <a href="/UserProfile" class="nav-link text-dark font-italic bg-light">
-                    <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/UserOrders" class="nav-link text-dark font-italic bg-light">
-                    <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>Orders
-                    </a></li> 
-            </ul>
-            </div>
-            <div class="page-content p-5" id="content">
-            <div class="input-group mb-3">
-                <input type="text" onChange = {this.changeHandler} class="form-control" name="itemname" placeholder="Search"/>
-                <div class="input-group-append">
-                <button class="btn btn-danger" type="submit" onClick = {this.onSubmit}>Search</button>  
-                </div>
-                
-                <form>
-
-                
-                <div className="g-input-control btn-danger">
-                    <select className="btn-danger" onChange = {(e) => this.setState({option : e.target.value})} value = {this.state.option} >
-                    <option value="All" selected="selected">All</option>
-                        {filterResults}
-                    </select>
-                    <button class="btn btn-danger" type="submit" onClick = {this.applyFilter}>Apply Filter</button>
-                </div>
-                </form>
-
-            </div>
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Restaurant Name</th>
-                            <th>Cuisine</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                        <tbody>
-                            {searchDetails}
-                        </tbody>
-                </table>
-            </div>
-            
-            </div>
-        )
+const mapDispatchToProps = (dispatch) => {
+    return {
+        showAllJobs: (data) => dispatch(showAllJobs(data)),
+        showFilterJobs: (data) => dispatch(showFilterJobs(data))
     }
 }
 
-export default StudentDashboard;
+class StudentDashboard extends Component {
+
+	constructor() {
+		super();
+		this.search = this.search.bind(this);
+	}
+
+    componentDidMount() {
+        this.getJobs();
+	}
+
+
+    getJobs = () => {
+        axios.defaults.headers.common['x-auth-token'] = localStorage.getItem('token');
+        axios.get(rooturl  + "/jobs")
+        .then(res => {
+            if(res.status === 200){
+                if(res.data){
+                    this.props.showAllJobs(res.data);
+                }
+            }
+        })
+        .catch(err=>{
+            //this.props.setError(err.response.data);
+        })
+    }
+
+    search = (event) => {
+        event.preventDefault();
+        let jobs = this.props.alljobs.filter(job => {
+            return job[event.target.elements[0].getAttribute('id')].toLowerCase().includes(event.target.elements[0].value.toLowerCase())
+        });
+
+        this.props.showFilterJobs(jobs);
+    }
+
+    recordFilters = (event) => {
+        
+    }
+
+    render() {
+		let jobs = this.props.alljobs;
+		if(this.props.filterjobs.length){
+			jobs = this.props.filterjobs;
+		}
+		const list = Object.keys(jobs).map(key =>
+			<Card  className = "mt-2">
+				<Card.Body>
+				<Card.Title>{jobs[key].TITLE}</Card.Title>
+				<Card.Text id="type">
+					{jobs[key].JOB_TYPE}
+				</Card.Text>
+				<Card.Text id="location">
+					{jobs[key].LOCATION}
+				</Card.Text>
+				<Card.Text id="salary">
+					${jobs[key].SALARY} / hour
+				</Card.Text>
+				<Card.Text id="posting_date">
+					{jobs[key].POST_DATE}
+				</Card.Text>          
+				</Card.Body>
+			</Card>
+		);
+
+        return (
+            <Container className="mt-5 mb-5">
+				<NavBarLogin />
+        <Form onSubmit={this.search}>
+            <Form.Row>
+                <Form.Group as={Col} md="4" controlId="TITLE">
+                    <Form.Label></Form.Label>
+                    <Form.Control placeholder="Search by job title or company name" type="text" />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a valid input.
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="4" controlId="city">
+                    <Form.Label>	</Form.Label>
+                    <Form.Control placeholder="Search by location" type="text" />
+                    <Form.Control.Feedback type="invalid">
+                        Please provide a valid city.
+                </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="4" controlId="validationCustom04">
+                    <Button type="submit" style={{ marginTop: '32px' }}>Search</Button>
+                </Form.Group>
+            </Form.Row>
+            <Form.Row className='w-50'>
+                <Form.Group as={Col} md="3" controlId="fullTimeFilter">
+                    <button type="button" className="btn">Full-Time</button>
+                </Form.Group>
+                <Form.Group as={Col} md="3" controlId="partTimeFilter">
+                    <button type="button" className="btn">Part-Time</button>
+                </Form.Group>
+                <Form.Group as={Col} md="3" controlId="internFilter">
+                    <button type="button" onClick = {this.recordFilters} className="btn">Internship</button>
+                </Form.Group>
+                <Form.Group as={Col} md="3" controlId="oncampusFilter">
+                    <button type="button" className="btn ">On-Campus</button>
+                </Form.Group>
+            </Form.Row>
+        </Form>
+				{list}
+            </Container>  
+        )
+    };
+};
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(StudentDashboard);
