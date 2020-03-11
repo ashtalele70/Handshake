@@ -1,4 +1,5 @@
 const JOB = require('./Job');
+const EVENT = require('./Event');
 
 module.exports = (sequelize, DataTypes) => {
   const COMPANY = sequelize.define('COMPANY', {
@@ -14,5 +15,6 @@ module.exports = (sequelize, DataTypes) => {
     PROFILE_PICTURE: { type: DataTypes.STRING },
   });
   COMPANY.hasMany(JOB(sequelize, DataTypes));
+  COMPANY.hasMany(EVENT(sequelize, DataTypes));
   return COMPANY;
 };

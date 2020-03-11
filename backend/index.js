@@ -37,6 +37,7 @@ app.use('/studentProfile', require('./routes/profile'));
 app.use('/companies', require('./routes/companies'));
 app.use('/jobs', require('./routes/jobs'));
 app.use('/authc', require('./routes/authc'));
+app.use('/events', require('./routes/events'));
 
 
 const PORT = process.env.PORT || 3000;

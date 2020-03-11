@@ -2,7 +2,8 @@ import * as types from '../Types/types';
 
 const initialState = {
     alljobs: [],
-    filterjobs: []
+	filterjobs: [],
+	showjob: false
 }
 
 export default function (state = initialState, action) {
@@ -15,7 +16,11 @@ export default function (state = initialState, action) {
 			return Object.assign({}, state, {
 				filterjobs : action.payload.data
 			})
-        default:
+		case types.SHOW_SELECTED_JOB :
+		return Object.assign({}, state, {
+			showjob : action.payload.data
+		})
+        default: 
             return state;
     }
 }

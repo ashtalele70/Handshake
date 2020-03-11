@@ -5,27 +5,33 @@ import { PATH } from '../../config';
 import { connect } from 'react-redux';
 import {rooturl} from '../../config';
 import NavBarLogin from "../NavBarL";
-import { showAllJobs, showFilterJobs } from '../../Actions/dashboardAction';
+import { showAllJobs, showFilterJobs, showSelectedJob } from '../../Actions/dashboardAction';
 
 const mapStateToProps = (state) => {
     return {
         alljobs: state.userDashboardData.alljobs,
-        filterjobs: state.userDashboardData.filterjobs
+		filterjobs: state.userDashboardData.filterjobs,
+		showjob: state.userDashboardData.showjob
     };
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         showAllJobs: (data) => dispatch(showAllJobs(data)),
-        showFilterJobs: (data) => dispatch(showFilterJobs(data))
+		showFilterJobs: (data) => dispatch(showFilterJobs(data)),
+		showSelectedJob: (data) => dispatch(showSelectedJob(data)) 
     }
 }
 
 class StudentDashboard extends Component {
-
+	
+	selectedSearchfilters = [];
+	selectedJob = {};
+	
 	constructor() {
 		super();
 		this.search = this.search.bind(this);
+		// this.jobDesc = this.jobDesc.bind(this);
 	}
 
     componentDidMount() {
@@ -54,11 +60,25 @@ class StudentDashboard extends Component {
             return job[event.target.elements[0].getAttribute('id')].toLowerCase().includes(event.target.elements[0].value.toLowerCase())
         });
 
+		if(this.selectedSearchfilters.length) {
+            this.selectedSearchfilters.forEach(filter => {
+                jobs = jobs.filter(job => {
+                    return job['JOB_TYPE'] === filter;
+				})
+			})
+		}
+		   
+				
         this.props.showFilterJobs(jobs);
     }
 
-    recordFilters = (event) => {
-        
+    applyFilters = (event) => {
+        this.selectedSearchfilters.push(event.target.innerText);
+    }
+
+	showSelectedJob = (action, job) => {
+        this.props.showSelectedJob(action);
+        this.selectedJob = job;
     }
 
     render() {
@@ -67,7 +87,8 @@ class StudentDashboard extends Component {
 			jobs = this.props.filterjobs;
 		}
 		const list = Object.keys(jobs).map(key =>
-			<Card  className = "mt-2">
+			<Card  className = "mt-2 w-100" >
+				
 				<Card.Body>
 				<Card.Title>{jobs[key].TITLE}</Card.Title>
 				<Card.Text id="type">
@@ -81,13 +102,36 @@ class StudentDashboard extends Component {
 				</Card.Text>
 				<Card.Text id="posting_date">
 					{jobs[key].POST_DATE}
-				</Card.Text>          
+				</Card.Text>
+				<Card.Text id="description" style={{display: 'none'}}>
+					{jobs[key].DESCRIPTION}
+				</Card.Text>           
 				</Card.Body>
+				<Button variant="primary" onClick={() => this.showSelectedJob(true, jobs[key])}>View Job</Button>
 			</Card>
 		);
 
+		let jobDesc;
+		if(this.props.showjob){
+		jobDesc= (
+			<Card>
+			<Card.Body>
+				<Card.Title>Job Description</Card.Title>
+				<Card.Subtitle className="mb-2 text-muted"> Position : {this.selectedJob.TITLE}</Card.Subtitle>
+				<Card.Text>
+				Description: {this.selectedJob.DESCRIPTION}
+				</Card.Text>
+				<Card.Text>Application Deadline: {this.selectedJob.APP_DEADLINE}</Card.Text>
+				<Card.Text>Date Posted: {this.selectedJob.POST_DATE}</Card.Text>
+				<Card.Text>Salary: ${this.selectedJob.SALARY}/hr</Card.Text>
+			</Card.Body>
+
+			<Button className="w-25" variant="primary">Apply to this job</Button>
+			</Card>
+		)
+		}
         return (
-            <Container className="mt-5 mb-5">
+            <Container className="mt-5 mb-5" as={Col}>
 				<NavBarLogin />
         <Form onSubmit={this.search}>
             <Form.Row>
@@ -117,14 +161,17 @@ class StudentDashboard extends Component {
                     <button type="button" className="btn">Part-Time</button>
                 </Form.Group>
                 <Form.Group as={Col} md="3" controlId="internFilter">
-                    <button type="button" onClick = {this.recordFilters} className="btn">Internship</button>
+                    <button type="button" onClick = {this.applyFilters} className="btn">Internship</button>
                 </Form.Group>
                 <Form.Group as={Col} md="3" controlId="oncampusFilter">
                     <button type="button" className="btn ">On-Campus</button>
                 </Form.Group>
             </Form.Row>
         </Form>
-				{list}
+		<Row>
+                    <Col md={4}>{list}</Col>
+					<Col >{jobDesc}</Col>
+				</Row>
             </Container>  
         )
     };

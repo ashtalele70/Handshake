@@ -14,3 +14,4 @@ export const CHANGE_MODE = 'CHANGE_MODE';
 export const ENABLE_SAVE = 'ENABLE_SAVE'
 export const ALL_JOBS = 'ALL_JOBS'
 export const FILTER_JOBS = 'FILTER_JOBS';
+export const SHOW_SELECTED_JOB = 'SHOW_SELECTED_JOB';

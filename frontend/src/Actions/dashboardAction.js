@@ -19,3 +19,11 @@ export const showFilterJobs = (data) => {
     }
 }
 
+export const showSelectedJob = (data) => {
+    return {
+        type : type.SHOW_SELECTED_JOB,
+        payload : {
+            data
+        }
+    }
+}

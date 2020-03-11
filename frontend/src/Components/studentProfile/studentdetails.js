@@ -10,13 +10,14 @@ import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NavBarLogin from "../NavBarL";
-import { profileupdate,storeStudentDetails, changeMode, enableSave, saveProfilePic  } from '../../Actions/profileAction';
+import { profileupdate,storeStudentDetails, changeMode, enableSave, saveProfilePic, storeStudentEducationDetails  } from '../../Actions/profileAction';
 import {Link} from 'react-router-dom';
 
 function mapStateToprops(state){
     return {
 		//profileData: state.profileData,
 		studentDetails: state.profileData.studentDetails,
+		studentEducationDetails: state.profileData.studentEducationDetails,
 		mode: state.profileData.mode,
         save: state.profileData.save,
         profile_pic: state.profileData.profile_pic,
@@ -29,7 +30,8 @@ function mapDispatchToprops(dispatch) {
 		storeStudentDetails: (data) => dispatch(storeStudentDetails(data)),
 		changeMode: (data) => dispatch(changeMode(data)),
 		enableSave: (data) => dispatch(enableSave(data)),
-        saveProfilePic: (data) => dispatch(saveProfilePic(data)),
+		saveProfilePic: (data) => dispatch(saveProfilePic(data)),
+		storeStudentEducationDetails: (data) => dispatch(storeStudentEducationDetails(data)),
     };
 }
 
@@ -43,6 +45,7 @@ class StudentDetails extends Component{
 
 	componentDidMount(){
 		this.getStudentDetails();
+		this.getStudentEducationDetails();
 	}
 
 	getStudentDetails =  async () => {
@@ -59,6 +62,14 @@ class StudentDetails extends Component{
 			if(res.data.career_obj){
 				this.props.save = false;
 			}
+		}
+	}
+
+	getStudentEducationDetails =  async () => {
+		axios.defaults.headers.common['x-auth-token'] = localStorage.getItem('token');
+		let res = await axios.get(rooturl + "/studentProfile/education");
+		if(res.status === 200) {
+			this.props.storeStudentEducationDetails(res.data);
 		}
 	}
 
@@ -107,10 +118,10 @@ class StudentDetails extends Component{
 					</Row>
 					{/* <Row className="justify-content-center">
 						<Card.Text>
-							{this.props.studentDetails && this.props.studentDetails.data.STUDENT.COLLEGE_NAME }
+							{this.props.studentEducationDetails && this.props.studentEducationDetails[0].COLLEGE_NAME }
 						</Card.Text>
-					</Row>
-					<Row className="justify-content-center">
+					</Row> */}
+					{/* <Row className="justify-content-center">
 						<Card.Text>
 							{(this.props.education && this.props.education.length) ? (this.props.education[0].degree + ', ' + this.props.education[0].major) : ''}
 						</Card.Text>
