@@ -32,9 +32,9 @@ function mapDispatchToProps(dispatch) {
 class CareerObjective extends Component{
 	constructor(props){
         super(props);
-        // this.changeHandler = this.changeHandler.bind(this);
+        this.changeHandler = this.changeHandler.bind(this);
         // this.onChange = this.onChange.bind(this);
-        // this.onSubmit = this.onSubmit.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
 	}
 
 	componentDidMount(){
@@ -94,7 +94,7 @@ class CareerObjective extends Component{
 		if(res.status === 200) {
 			this.props.storeStudentDetails(res.data);
 		}
-		this.props.controlModal(false);
+		//this.props.controlModal(false);
 	}
 
 	changeHandler = (e) => {
@@ -109,6 +109,25 @@ class CareerObjective extends Component{
         });
 	}
 
+	onSubmit = async (e) => {
+		// axios.defaults.headers.common['x-auth-token'] = localStorage.getItem('token');
+		// let res = await axios.post(rooturl + "/studentProfile/current", this.props.CAREER_OBJECTIVE);
+		// if(res.status === 200) {
+		// 	console.log(res.data);
+		// }
+	}
+ 
+	enableCareerObj = (event) => {
+		if(event.target.innerText === 'Cancel'){
+			document.getElementById("obj").disabled = true;
+			this.props.controlModal(false);
+		} else {
+			document.getElementById("obj").disabled = false;
+			this.props.controlModal(true);
+		}
+		
+	}
+
 
     render() {
         return (
@@ -119,8 +138,7 @@ class CareerObjective extends Component{
                 <div class="container">
                 {/* <img src={this.state.imglink} style={{ height: 250, width: 200 }} alt="Profile Picture"/> */}
                 <h2 >Career Objective</h2>
-	<FontAwesomeIcon icon={faEdit} onClick={() => this.props.controlModal(true)} />
-			{this.props.displayModal &&
+			{/* {this.props.displayModal &&
 			<Modal>
 			  <Modal.Header>
 				<Modal.Title>Modal heading</Modal.Title>
@@ -130,13 +148,13 @@ class CareerObjective extends Component{
 						<label class="control-label col-sm-2" for="obj"></label>
 						<div class="col-sm-10">
 							<input type="text" value={this.props.studentDetails.data.STUDENT.CAREER_OBJECTIVE} class="form-control" id="obj"  placeholder="Career Objective" name="obj" disabled  />
-							{/* <FontAwesomeIcon icon={faEdit} onClick={handleShow} /> */}
+							{/* <FontAwesomeIcon icon={faEdit} onClick={handleShow} /> 
 						</div>
 						</div>
 						
 				
 					</form>
-			  {/* <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body> */}
+			  <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
 			  <Modal.Footer>
 				<Button variant="secondary" onClick={() => this.props.controlModal(false)}>
 				  Close
@@ -145,24 +163,25 @@ class CareerObjective extends Component{
 				  Save Changes
 				</Button>
 			  </Modal.Footer>
-			</Modal>}
+			</Modal>} */}
 				
-                <form class="form-horizontal">
+                <form class="form-horizontal" onSubmit={this.onSubmit}>
+					<FontAwesomeIcon icon={faEdit} onClick={this.enableCareerObj} />
                     <div class="form-group">
                     <label class="control-label col-sm-2" for="obj"></label>
                     <div class="col-sm-10">
-                        <input type="text" onChange = {this.changeHandler} value={this.props.studentDetails.data.STUDENT.CAREER_OBJECTIVE} class="form-control" id="obj"  placeholder="Career Objective" name="obj" disabled  />
+                        <input type="text" value={this.props.studentDetails.data.STUDENT.CAREER_OBJECTIVE} class="form-control" id="obj"  placeholder="Career Objective" name="obj" disabled  />
 						{/* <FontAwesomeIcon icon={faEdit} onClick={handleShow} /> */}
                     </div>
                     </div>
                     
-                    
+                    {this.props.displayModal &&
                     <div class="form-group">        
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-danger" onClick={this.onSubmit}>Submit</button>
-                        <Link to="/UserDashboard"><button type="button" class="btn btn-danger">Cancel</button></Link>
+                        <button type="submit" class="btn btn-danger">Submit</button>
+                        <Link to="/UserDashboard"><button type="button" class="btn btn-danger" onClick={this.enableCareerObj}>Cancel</button></Link>
                     </div>
-                    </div>
+                    </div>}
                 </form>
                 </div>}
                 </div>

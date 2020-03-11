@@ -6,19 +6,22 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import {rooturl} from '../../config';
 import {Link} from 'react-router-dom';
-import { storeStudentEducationDetails  } from '../../Actions/profileAction';
+import { Card, Image, Button, Row, Col, Form } from 'react-bootstrap';
+import { storeStudentEducationDetails, changeEdMode } from '../../Actions/profileAction';
 
 function mapStateToProps(state){
     return {
 		//profileData: state.profileData,
-		studentEducationDetails: state.profileData.studentEducationDetails
+		studentEducationDetails: state.profileData.studentEducationDetails,
+		edMode: state.profileData.edMode,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
 		//profileupdate : (profiledata) => dispatch(profileupdate(profiledata)),
-		storeStudentEducationDetails: (data) => dispatch(storeStudentEducationDetails(data))
+		storeStudentEducationDetails: (data) => dispatch(storeStudentEducationDetails(data)),
+		changeEdMode: (data) => dispatch(changeEdMode(data)),
     };
 }
 
@@ -42,6 +45,40 @@ class StudentEducation extends Component{
 		}
 	}
 
+	updateEducationInfo = (value) => {
+        let newEducation = [];
+        Object.assign(newEducation, this.props.studentEducationDetails);
+        newEducation.push(value);            
+        this.props.saveEducationInfo(newEducation);
+	}
+	
+	saveEducationInfo = (event) => {
+        event.preventDefault();
+        const data = {
+            "COLLEGE_NAME": event.target.elements[0].value,            
+            "DEGREE": event.target.elements[1].value,
+            "YEAR_OF_PASSING": event.target.elements[2].value,
+            "MAJOR": event.target.elements[3].value,
+            "CITY": event.target.elements[4].value,
+            "STATE": event.target.elements[5].value, 
+            "GPA": event.target.elements[6].value           
+        }
+        axios.post(rooturl + "/studentProfile/education", data)
+        .then(res => {
+            if(res.status === 200){
+                this.updateEducationInfo(data);
+                this.changeEdMode(false);
+                //this.props.mode = false;
+            }
+        })
+        .catch(err=>{
+            //this.props.authFail(err.response.data.msg);
+        })
+	}
+	changeEdMode = (mode) => {
+        this.props.changeEdMode(mode);
+    }
+	
 	changeHandler = (e) => {
         this.setState({
             [e.target.name] : e.target.value
@@ -55,73 +92,98 @@ class StudentEducation extends Component{
 	}
 
     render() {
-        return (
-            <div>
-                
-                <div>
-                <div class="container">
-                {/* <img src={this.state.imglink} style={{ height: 250, width: 200 }} alt="Profile Picture"/> */}
-                <h2 >Education Details</h2>
-                
-				{this.props.studentEducationDetails &&
-				this.props.studentEducationDetails.data.map(studentEdu => {
-					return (
-						<form class="form-horizontal">
-						{/* <div class="form-group">
-								<label>Profile Picture</label>
-								<div class="input-group">
-									<span class="input-group-btn">
-										<span class="btn btn-default btn-file">Upload Image <input type="file" id="imgInp" name="imglink" onChange = {this.onChange}/></span> 
-									</span>
-								</div>
-							</div> */}
-							<div class="form-group">
-							<label class="control-label col-sm-4" for="name">College Name</label>
-							<div class="col-sm-10">
-								<input type="text" onChange = {this.changeHandler} value={studentEdu.COLLEGE_NAME} class="form-control" id="name"  placeholder="College Name" name="name" disabled />
-							</div>
-							</div>
-							<div class="form-group">
-							<label class="control-label col-sm-6" for="degree">Degree</label>
-							<div class="col-sm-10">
-								<input type="text" onChange = {this.changeHandler} value={studentEdu.DEGREE} class="form-control" id="degree"  placeholder="Degree" name="degree" disabled />
-							</div>
-							</div>
-							<div class="form-group">
-							<label class="control-label col-sm-2" for="from">From</label>
-							<div class="col-sm-10">
-								<input type="date" onChange = {this.changeHandler} value={studentEdu.FROM} class="form-control" id="from" placeholder="From" name="from" disabled/>
-							</div>
-							</div>
-							<div class="form-group">
-							<label class="control-label col-sm-2" for="to">To</label>
-							<div class="col-sm-10">
-								<input type="date" onChange = {this.changeHandler} value={studentEdu.TO} class="form-control" id="to" placeholder="To" name="to" disabled/>
-							</div>
-							</div>
-							<div class="form-group">
-							<label class="control-label col-sm-2" for="location">Location</label>
-							<div class="col-sm-10">
-								<input type="text" onChange = {this.changeHandler} value={studentEdu.LOCATION} class="form-control" id="location" placeholder="Location" name="location" disabled/>
-							</div>
-							</div>
-							
-							
-							<div class="form-group">        
-							<div class="col-sm-offset-2 col-sm-10">
-								<button type="submit" class="btn btn-danger" onClick={this.onSubmit}>Submit</button>
-								<Link to="/UserDashboard"><button type="button" class="btn btn-danger">Cancel</button></Link>
-							</div>
-							</div>
-						</form>
-					);
-				  })
+		let content;
+    
+		if(!this.props.edMode && this.props.studentEducationDetails && this.props.studentEducationDetails.length){
+			content = (
+				<div>
+					<Card.Text>
+						College name: {(this.props.studentEducationDetails && this.props.studentEducationDetails.length) ? this.props.studentEducationDetails[0].COLLEGE_NAME : ''}
+					</Card.Text>
+					<Card.Text>
+						Degree: {(this.props.studentEducationDetails && this.props.studentEducationDetails.length) ? this.props.studentEducationDetails[0].DEGREE : ''}
+					</Card.Text>
+					<Card.Text>
+						Year of Passing: {(this.props.studentEducationDetails && this.props.studentEducationDetails.length) ? this.props.studentEducationDetails[0].YEAR_OF_PASSING: ''}
+					</Card.Text>
+					<Card.Text>
+						Major: {(this.props.studentEducationDetails && this.props.studentEducationDetails.length) ? this.props.studentEducationDetails[0].MAJOR: ''}
+					</Card.Text>
+					<Card.Text>
+						GPA: {(this.props.studentEducationDetails && this.props.studentEducationDetails.length) ? this.props.studentEducationDetails[0].GPA: ''}
+					</Card.Text>
+				</div>
+			);
+		} else {
+			content = (
+				<Form onSubmit = {this.saveEducationInfo}>
+					<Form.Row>
+                    <Form.Group as={Col} controlId="formGridCollege">
+                    <Form.Label>College Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter college" />
+                    </Form.Group>
 
-                }
-                </div>
-                </div>
-                
-            </div>
+                    <Form.Group as={Col} controlId="formGridDegree">
+                    <Form.Label>Degree</Form.Label>
+                    <Form.Control as="select">
+                        <option>Choose...</option>
+                        <option>High School</option>
+                        <option>Associates</option>
+                        <option>Certificate</option>
+                        <option>Advanced Certificate</option>
+                        <option>Bachelors</option>
+                        <option>Masters</option>
+                        <option>Doctorate</option>
+                        <option>Postdoctoral Studies</option>
+                        <option>Non-Degree seeking</option>
+                    </Form.Control>
+                    </Form.Group>
+                </Form.Row>
+
+                <Form.Group controlId="formGridYear">
+                    <Form.Label>Year of Passing</Form.Label>
+                    <Form.Control placeholder="Enter year of passing" />
+                </Form.Group>
+
+                <Form.Group controlId="formGridMajor">
+                    <Form.Label>Major</Form.Label>
+                    <Form.Control placeholder="Enter major" />
+                </Form.Group>
+
+                <Form.Row>
+                    <Form.Group as={Col} controlId="formGridCity">
+                    <Form.Label>City</Form.Label>
+                    <Form.Control />
+                    </Form.Group>
+
+                    <Form.Group as={Col} controlId="formGridState">
+                    <Form.Label>State</Form.Label>
+                    <Form.Control type="text" placeholder="Enter state" />
+                    </Form.Group>
+                </Form.Row>
+
+                <Form.Group controlId="formGridGpa">
+                    <Form.Label>GPA</Form.Label>
+                    <Form.Control type="number" placeholder="Enter GPA" />
+                </Form.Group>
+
+                <Button variant="primary" type="submit">
+                    Submit
+                </Button>
+            </Form>
+        )
+    }
+
+        return (
+		<Card >
+            <Card.Body>
+            <Card.Title>Education</Card.Title>
+            {content}            
+            </Card.Body>
+            <Card.Footer>
+            <Button variant="link" onClick = { () => this.props.changeEdMode(true) }>Add School</Button>
+            </Card.Footer>
+        </Card>
         )
     }
 

@@ -6,24 +6,30 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import {rooturl} from '../../config';
 import { Card, Image, Button, Row, Col, Form } from 'react-bootstrap';
-// import { faEdit } from "@fortawesome/free-solid-svg-icons";
-// import { faCamera } from "@fortawesome/free-solid-svg-icons";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NavBarLogin from "../NavBarL";
-import { profileupdate,storeStudentDetails  } from '../../Actions/profileAction';
+import { profileupdate,storeStudentDetails, changeMode, enableSave, saveProfilePic  } from '../../Actions/profileAction';
 import {Link} from 'react-router-dom';
 
-function mapStateToProps(state){
+function mapStateToprops(state){
     return {
 		//profileData: state.profileData,
-		studentDetails: state.profileData.studentDetails
+		studentDetails: state.profileData.studentDetails,
+		mode: state.profileData.mode,
+        save: state.profileData.save,
+        profile_pic: state.profileData.profile_pic,
     }
 }
 
-function mapDispatchToProps(dispatch) {
+function mapDispatchToprops(dispatch) {
     return {
 		//profileupdate : (profiledata) => dispatch(profileupdate(profiledata)),
-		storeStudentDetails: (data) => dispatch(storeStudentDetails(data))
+		storeStudentDetails: (data) => dispatch(storeStudentDetails(data)),
+		changeMode: (data) => dispatch(changeMode(data)),
+		enableSave: (data) => dispatch(enableSave(data)),
+        saveProfilePic: (data) => dispatch(saveProfilePic(data)),
     };
 }
 
@@ -43,7 +49,16 @@ class StudentDetails extends Component{
 		axios.defaults.headers.common['x-auth-token'] = localStorage.getItem('token');
 		let res = await axios.get(rooturl + "/studentProfile/current");
 		if(res.status === 200) {
-			this.props.storeStudentDetails(res.data);
+			if(res.data.STUDENT.PROFILE_PICTURE) {
+				this.props.saveProfilePic(rooturl + "/" + res.data.STUDENT.PROFILE_PICTURE);
+			}
+			// this.props.storeStudentDetails(res.data);
+			//this.props.saveProfilePic(res.data);
+			this.props.storeStudentDetails({...res.data, editMode:false});
+                    
+			if(res.data.career_obj){
+				this.props.save = false;
+			}
 		}
 	}
 
@@ -58,72 +73,115 @@ class StudentDetails extends Component{
             [e.target.name] : e.target.files[0]
         });
 	}
+
+	addProfilePic = (event) => {
+        event.preventDefault();
+        const formData = new FormData();
+        const file = event.target.elements[0].files[0];
+        formData.append('profile_pic', event.target.elements[0].files[0]);
+        formData.append('id', this.props.studentDetails.data.STUDENT.id);
+        axios.post(rooturl + "/studentProfile/profilepic", formData, {
+            headers: {
+                'content-type':'multipart/form-data'
+            }
+        })
+        .then(res => {
+            if(res.status === 200){
+                this.props.saveProfilePic(rooturl + "/" + file.name);
+            }
+        })
+        .catch(err=>{
+            //this.props.authFail(err.response.data.msg);
+        })
+    }
 	
     render() {
-        return (
-            <div>
-                
-                <div>
-                <div class="container">
-                {/* <img src={this.state.imglink} style={{ height: 250, width: 200 }} alt="Profile Picture"/> */}
-                <h2 >User Profile</h2>
-                
-				{this.props.studentDetails &&
-                <form class="form-horizontal">
-				<div class="form-group">
-                        <label>Profile Picture</label>
-                        <div class="input-group">
-                            <span class="input-group-btn">
-                                <span class="btn btn-default btn-file">Upload Image <input type="file" id="imgInp" name="imglink" onChange = {this.onChange}/></span> 
-                            </span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                    <label class="control-label col-sm-2" for="name">Name</label>
-                    <div class="col-sm-10">
-                        <input type="text" onChange = {this.changeHandler} value={this.props.studentDetails.data.STUDENT.FIRST_NAME} class="form-control" id="name"  placeholder="Name" name="name" disabled />
-                    </div>
-                    </div>
-                    <div class="form-group">
-                    <label class="control-label col-sm-6" for="dob">Date of birth</label>
-                    <div class="col-sm-10">
-                        <input type="text" onChange = {this.changeHandler} value={this.props.studentDetails.data.STUDENT.DOB} class="form-control" id="dob"  placeholder="mm/dd/yyyy" name="dob" disabled />
-                    </div>
-                    </div>
-                    <div class="form-group">
-                    <label class="control-label col-sm-2" for="city">City</label>
-                    <div class="col-sm-10">
-                        <input type="text" onChange = {this.changeHandler} value={this.props.studentDetails.data.STUDENT.CITY} class="form-control" id="city" placeholder="City" name="city" disabled/>
-                    </div>
-                    </div>
-                    <div class="form-group">
-                    <label class="control-label col-sm-2" for="address">State</label>
-                    <div class="col-sm-10">
-                        <input type="text" onChange = {this.changeHandler} value={this.props.studentDetails.data.STUDENT.STATE} class="form-control" id="state" placeholder="Address" name="address" disabled/>
-                    </div>
-                    </div>
-                    <div class="form-group">
-                    <label class="control-label col-sm-2" for="address">Country</label>
-                    <div class="col-sm-10">
-                        <input type="text" onChange = {this.changeHandler} value={this.props.studentDetails.data.STUDENT.COUNTRY} class="form-control" id="country" placeholder="Address" name="address" disabled/>
-                    </div>
-                    </div>
-                    
-                    
-                    <div class="form-group">        
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-danger" onClick={this.onSubmit}>Submit</button>
-                        <Link to="/UserDashboard"><button type="button" class="btn btn-danger">Cancel</button></Link>
-                    </div>
-                    </div>
-                </form>}
-                </div>
-                </div>
-                
-            </div>
-        )
+
+		let content;
+    
+		if(!this.props.mode){
+			content = (
+				<div>
+					<Row className="justify-content-center">
+						<Card.Title>{this.props.studentDetails ? (this.props.studentDetails.data.STUDENT.FIRST_NAME + ' ' + this.props.studentDetails.data.STUDENT.FIRST_NAME) : ''}</Card.Title>
+					</Row>
+					{/* <Row className="justify-content-center">
+						<Card.Text>
+							{this.props.studentDetails && this.props.studentDetails.data.STUDENT.COLLEGE_NAME }
+						</Card.Text>
+					</Row>
+					<Row className="justify-content-center">
+						<Card.Text>
+							{(this.props.education && this.props.education.length) ? (this.props.education[0].degree + ', ' + this.props.education[0].major) : ''}
+						</Card.Text>
+					</Row>
+					<Row className="justify-content-center">
+						<Card.Text>
+						{(this.props.education && this.props.education.length) ? 'GPA: ' + this.props.education[0].cgpa : ''}
+						</Card.Text>
+					</Row> */}
+				</div>
+			);
+		} else {
+			content = (
+				<div>
+					<Form method="post" onSubmit={this.addProfilePic} className="pl-5 pt-2">
+						<div>
+							<Form.Control type="file" id="file" name="file" multiple />
+						</div>
+						<div>
+						<FontAwesomeIcon icon={faCamera} style={{marginBottom:'5px'}}/><Button type="submit" variant="link" >
+							<p className="text-muted font-weight-bold">Add Photo</p>
+						</Button>
+						</div>
+					</Form>
+					<Form onSubmit={this.props.submitHandler}>
+						<Row>
+							<Col>
+								<Form.Label>
+									First Name
+							</Form.Label>
+								<Form.Control defaultValue={this.props.studentDetails ? this.props.studentDetails.data.STUDENT.FIRST_NAME : ''} readOnly />
+							</Col>
+							<Col>
+								<Form.Label>
+									Last Name
+								</Form.Label>
+								{/* <Form.Control defaultValue={this.props.details ? this.props.studentDetails.data.STUDENT.LAST_NAME : ''} readOnly placeholder="Last name" onChange={this.props.updateHandler}/> */}
+								<Form.Control defaultValue={this.props.studentDetails ? this.props.studentDetails.data.STUDENT.LAST_NAME : ''} readOnly />
+							</Col>                    
+						</Row>
+						{/* <Row>
+							<Col>
+							<Form.Control plaintext readOnly defaultValue={(this.props.education && this.props.education.length) ? this.props.education[0].college_name : ''} />
+							<Form.Control plaintext readOnly defaultValue={(this.props.education && this.props.education.length) ? (this.props.education[0].degree + ', ' + this.props.education[0].major) : ''} />
+							</Col>
+						</Row> */}
+						<Row className="mt-2">
+							<Col>
+								<Button type="submit" variant="success">Save</Button>
+								<Button type="button" className="ml-2" variant="danger" onClick={this.props.changeMode}>Cancel</Button>
+							</Col>
+						</Row>
+					</Form>
+				</div>            
+			)
+		}
+			
+		return (
+			<Card>
+				<Card.Body>
+				<Row><Button variant="link" style={{paddingLeft: '300px'}} onClick={this.props.changeMode}><FontAwesomeIcon icon={faEdit} /></Button></Row>
+				<Row className="justify-content-center">
+					<Image src={this.props.profile_pic} width="100"
+						height="100" roundedCircle/>
+				</Row>
+				{content}
+				</Card.Body>
+			</Card>
+		);
     }
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StudentDetails);
+export default connect(mapStateToprops, mapDispatchToprops)(StudentDetails);

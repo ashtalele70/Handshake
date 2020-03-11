@@ -6,7 +6,7 @@ const router = express.Router();
 // const { check, validationResult } = require('express-validator');
  const auth = require('../middleware/auth');
 
-const { JOB } = require('../config/dbConnection');
+const { JOB, COMPANY } = require('../config/dbConnection');
 
 // @route     GET /jobs
 // @desc      Get all the jobs for a student
@@ -27,7 +27,11 @@ router.get(
 	// } = req.body;
 	console.log(req.user);
 	try {
-		const jobList = await JOB.findAll();
+		const jobList = await JOB.findAll({
+			include: [{
+				model: COMPANY
+			}]
+		});
 	
 		console.log(jobList);
 		res.json(jobList);

@@ -1,17 +1,17 @@
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/dbConnection');
-
+const frontEndURL = require('./hostname');
+console.log(frontEndURL);
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3001', credentials: true }));
-
+app.use(cors({ origin: frontEndURL.frontendurl, credentials: true }));
+app.use(express.static('uploads'));
 // Connect Database
 // connectDB.connectDB();
 
 // Allow Access Control
 app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3001');
+	res.setHeader('Access-Control-Allow-Origin', frontEndURL.frontendurl);
 	res.setHeader('Access-Control-Allow-Credentials', 'true');
 	res.setHeader(
 		'Access-Control-Allow-Methods',

@@ -5,20 +5,22 @@ import NavBar from "../NavBar";
 import { connect } from 'react-redux'; 
 import axios from 'axios';
 import {rooturl} from '../../config';
-import { storeStudentDetails  } from '../../Actions/profileAction';
+import { saveSkillset  } from '../../Actions/profileAction';
 import {Link} from 'react-router-dom';
+import { Card, Button, Form, FormControl, Alert } from 'react-bootstrap';
 
 function mapStateToProps(state){
     return {
 		//profileData: state.profileData,
-		studentDetails: state.profileData.studentDetails
+		
+		skillset: state.profileData.skillset
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
 		//profileupdate : (profiledata) => dispatch(profileupdate(profiledata)),
-		storeStudentDetails: (data) => dispatch(storeStudentDetails(data))
+		saveSkillset: (data) => dispatch(saveSkillset(data)),
     };
 }
 
@@ -31,15 +33,7 @@ class StudentSkillset extends Component{
 	}
 
 	componentDidMount(){
-		this.getStudentDetails();
-	}
-
-	getStudentDetails =  async () => {
-		axios.defaults.headers.common['x-auth-token'] = localStorage.getItem('token');
-		let res = await axios.get(rooturl + "/studentProfile/current");
-		if(res.status === 200) {
-			this.props.storeStudentDetails(res.data);
-		}
+		this.getSkillset();
 	}
 
 	changeHandler = (e) => {
@@ -53,41 +47,94 @@ class StudentSkillset extends Component{
             [e.target.name] : e.target.files[0]
         });
 	}
-    render() {
-        return (
-            <div>
-                
-                <div>
-                <div class="container">
-                {/* <img src={this.state.imglink} style={{ height: 250, width: 200 }} alt="Profile Picture"/> */}
-                <h2 >Skills</h2>
-                
-				{this.props.studentDetails &&
-				 this.props.studentDetails.data.STUDENT.SKILLSET.split(',').map(studentSkill => {
-				 	return (
-                <form class="form-horizontal">
-                    <div class="form-group">
-                    <label class="control-label col-sm-2" for="skill"></label>
-                    {/* <div class="col-sm-10"> */}
-                        <input type="text" onChange = {this.changeHandler} value={studentSkill} class="form-control col-sm-4" id="skill"  placeholder="Skill Set" name="skill" disabled />
-                    {/* </div> */}
-                    </div>
-           
-                </form>
-				);
-			})
-				}
+	getSkillset = () => {
+        axios.get(rooturl + "/studentProfile/skillset")
+        .then(res => {
+            if(res.status == 200){
+                if(res.data){
+                    this.props.saveSkillset(res.data);
+                }
+            }
+        })
+        .catch(err=>{
+            //this.props.setError(err.response.data);
+        })
+	}
 
-<div class="form-group">        
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-danger" onClick={this.onSubmit}>Submit</button>
-                        <Link to="/UserDashboard"><button type="button" class="btn btn-danger">Cancel</button></Link>
-                    </div>
-                    </div>
-                </div>
-                </div>
-                
-            </div>
+	updateSkillset = (value, action) => {
+        let newSkills = [];
+        Object.assign(newSkills, this.props.skillset);
+        let idx = newSkills.findIndex(skill => skill.toLowerCase() === value.toLowerCase());
+        if(action === "remove") {
+            if(idx > -1) {
+                newSkills.splice(idx, 1);
+            }
+        }            
+        else {
+            if(idx === -1) {
+                newSkills.push(value);
+            }            
+        }
+        this.props.saveSkillset(newSkills);
+	}
+	
+	saveSkillset = (event) => {
+        event.preventDefault();
+        const data =  { skill: event.target.elements[0].value };
+        axios.post(rooturl + "/studentProfile/skillset", data)
+        .then(res => {
+            if(res.status === 200){ 
+                this.updateSkillset(data.skill);
+            }
+        })
+        .catch(err=>{
+            //this.props.authFail(err.response.data.msg);
+        })
+    }
+	
+	removeSkillset = (skill) => {
+		// const data =  { skill: d};
+        // axios.post(rooturl + "/studentProfile/skillset", data)
+        // .then(res => {
+        //     if(res.status === 200){ 
+        //         this.updateSkillset(data.skill);
+        //     }
+        // })
+        // .catch(err=>{
+        //     //this.props.authFail(err.response.data.msg);
+		// })
+		this.updateSkillset(skill, "remove");
+    }
+
+    render() {
+		let skill;
+			if(this.props.skillset){
+			skill = this.props.skillset.map(skill => {
+				return(           
+					<Alert className="alert alert-primary" onClose = { () => this.removeSkillset(skill) } dismissible>
+						<p>{skill}</p>
+					</Alert>
+				)
+			})
+		}
+		
+
+        return (
+			<Card>
+            <Card.Body>
+            <Card.Title>Skills</Card.Title>
+            <Form onSubmit = {this.saveSkillset} className="mb-2">
+                <Form.Group controlId="formBasicEmail">
+                <FormControl
+                    placeholder="Add skills"
+                    aria-label="Add skills"
+                    aria-describedby="basic-addon2" name="skill"/>
+                </Form.Group>
+                <Button  type="submit">Add</Button>
+            </Form>
+            {skill}   
+            </Card.Body>
+        </Card>
         )
     }
 

@@ -25,6 +25,21 @@ module.exports = (sequelize, DataTypes) => {
 	  DESCRIPTION: {
 		type: DataTypes.STRING,
 	  },
+	  CITY: {
+		type: DataTypes.STRING,
+	  },
+	  STATE: {
+		type: DataTypes.STRING,
+	  },
+	  GPA: {
+		type: DataTypes.INTEGER,
+	  },
+	  MAJOR: {
+		type: DataTypes.STRING,
+	  },
+	  YEAR_OF_PASSING: {
+		type: DataTypes.DATE,
+	  },
 	});
 	return STUDENT_EDUCATION;
   };

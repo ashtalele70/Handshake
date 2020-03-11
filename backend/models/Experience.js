@@ -25,6 +25,15 @@ module.exports = (sequelize, DataTypes) => {
     DESCRIPTION: {
       type: DataTypes.STRING,
     },
+    CITY: {
+      type: DataTypes.STRING,
+    },
+    STATE: {
+      type: DataTypes.STRING,
+    },
+    COUNTRY: {
+      type: DataTypes.STRING,
+    },
   });
   return STUDENT_EXPERIENCE;
 };

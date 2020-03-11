@@ -1,12 +1,8 @@
-import { PROFILE_UPDATE } from '../Types/types';
-import { STORE_STUDENT_DETAILS } from '../Types/types';
-import { STORE_STUDENT_EDUCATION_DETAILS } from '../Types/types';
-import { STORE_STUDENT_EXPERIENCE_DETAILS } from '../Types/types';
-import {STORE_CONTROL_MODAL} from '../Types/types';
+import * as type from '../Types/types';
 
-export function profileupdate(profiledata){
+export const profileupdate = (profiledata) => {
     return {
-        type : PROFILE_UPDATE,
+        type : type.PROFILE_UPDATE,
         payload : {
             profileupdate : profiledata.profileupdate,
             getprofile : profiledata.getprofile
@@ -14,38 +10,92 @@ export function profileupdate(profiledata){
     }
 }
 
-export function storeStudentDetails(data){
+export const storeStudentDetails = (data) => {
     return {
-        type : STORE_STUDENT_DETAILS,
+        type : type.STORE_STUDENT_DETAILS,
         payload : {
             data
         }
     }
 }
 
-export function storeStudentEducationDetails(data){
+export const storeStudentEducationDetails = (data) => {
     return {
-        type : STORE_STUDENT_EDUCATION_DETAILS,
+        type : type.STORE_STUDENT_EDUCATION_DETAILS,
         payload : {
             data
         }
     }
 }
 
-export function storeStudentExperienceDetails(data){
+export const storeStudentExperienceDetails = (data) => {
     return {
-        type : STORE_STUDENT_EXPERIENCE_DETAILS,
+        type : type.STORE_STUDENT_EXPERIENCE_DETAILS,
         payload : {
             data
         }
     }
 }
 
-export function controlModal(data){
+export const controlModal = (data) => {
     return {
-        type : STORE_CONTROL_MODAL,
+        type : type.STORE_CONTROL_MODAL,
         payload : {
             data
         }
     }
 }
+
+export const saveSkillset = (data) => {
+	return {
+        type : type.STORE_STUDENT_SKILLS,
+        payload : {
+            data
+        }
+    }
+};
+
+export const changeMode = (data) => {
+	return {
+        type : type.CHANGE_MODE,
+        payload : {
+            data
+        }
+    }
+};
+
+export const changeEdMode = (data) => {	
+	return {
+        type : type.CHANGE_EDUCATION_MODE,
+        payload : {
+            data
+        }
+    }
+};
+
+export const changeExpMode = (data) => {
+    return {
+        type : type.CHANGE_EXPERIENCE_MODE,
+        payload : {
+            data
+        }
+    }
+};
+
+export const enableSave = (data) => {
+    return {
+        type : type.CHANGE_EXPERIENCE_MODE,
+        payload : {
+            data
+        }
+    }
+};
+
+export const saveProfilePic = (data) => {
+    return {
+        type : type.SAVE_PROFILE_PIC,
+        payload : {
+            data
+        }
+    }
+};

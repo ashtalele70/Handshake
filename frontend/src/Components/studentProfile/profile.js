@@ -10,17 +10,17 @@ import StudentEducation from './studenteducation';
 import StudentExperience from './studentexperience';
 import NavBarLogin from "../NavBarL";
 
-function mapStateToProps(state){
-	return {
-		userLoginData: state.userLoginData
-	}
-}
+// function mapStateToProps(state){
+// 	return {
+// 		userLoginData: state.userLoginData
+// 	}
+// }
 
-function mapDispatchToProps(dispatch) {
-	return {
-		signin: (signindata) => dispatch(signin(signindata))
-	}
-}
+// function mapDispatchToProps(dispatch) {
+// 	return {
+// 		signin: (signindata) => dispatch(signin(signindata))
+// 	}
+// }
 
 class Profile extends Component {
 
@@ -50,4 +50,4 @@ class Profile extends Component {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
+export default Profile;
