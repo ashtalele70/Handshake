@@ -11,6 +11,8 @@ import EmployerDashboard from './employerDashboard/employerdashboard';
 import StudentProfile from './studentProfile/profile';
 import StudentEvent from './studentEvent/event';
 import StudentRegisteredEvent from './studentRegisteredEvent/studentregisteredevents';
+import StudentAppliedJob from './studentAppliedJob/studentappliedjob';
+import PostAJob from './postJob/postjob';
 import cookie from 'react-cookies';
 
 class Main extends Component {
@@ -29,6 +31,8 @@ class Main extends Component {
                 <Route path="/StudentProfile" component={StudentProfile}/>
 				<Route path="/StudentEvent" component={StudentEvent}/>
 				<Route path="/StudentRegisteredEvent" component={StudentRegisteredEvent}/>
+				<Route path="/StudentAppliedJob" component={StudentAppliedJob}/>
+				<Route path="/PostAJob" component={PostAJob}/>
             </div>
         )
     }

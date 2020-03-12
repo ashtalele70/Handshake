@@ -37,7 +37,7 @@ router.post('/', upload.single('resume'), auth, async (req, res) => {
         STUDENTId: req.user.id,
         JOBId: req.body.id,
 		RESUME: req.file.filename,
-		STATUS: 'APPLIED'
+		STATUS: 'PENDING'
       });
       await newEntry.save();
     }

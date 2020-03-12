@@ -6,7 +6,7 @@ const router = express.Router();
 // const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 
-const { JOB, COMPANY } = require('../config/dbConnection');
+const { JOB, COMPANY, APPLICATION } = require('../config/dbConnection');
 
 // @route     GET /jobs
 // @desc      Get all the jobs for a student
@@ -37,6 +37,40 @@ router.get(
       res.json(jobList);
 	  } catch (err) {
       console.error(err.message);
+      res.status(500).send('Server Error');
+	  }
+  },
+);
+
+// @route     GET /jobs
+// @desc      Get all the jobs for a company
+// @access    Public
+
+router.post(
+  '/', auth,
+  // eslint-disable-next-line consistent-return
+  async (req, res) => {
+
+		console.log(req.body);
+    const {
+      TITLE, JOB_TYPE, APP_DEADLINE, POST_DATE, LOCATION, SALARY, DESCRIPTION,
+		  } = req.body;
+
+	  try {
+      const job = new JOB({
+        TITLE,
+        JOB_TYPE,
+        APP_DEADLINE,
+        POST_DATE,
+        LOCATION,
+        SALARY,
+		DESCRIPTION,
+		COMPANYId : req.user.id
+		  });
+		await job.save();
+      res.json(job);
+	  } catch (err) {
+      console.error(err);
       res.status(500).send('Server Error');
 	  }
   },
@@ -96,4 +130,32 @@ router.get(
     }
 		  },
 );
+
+// @route     GET /jobs/appliedjobs
+// @desc      Get all the jobs for a company
+// @access    Public
+
+router.get(
+  '/appliedjobs', auth,
+  // eslint-disable-next-line consistent-return
+  async (req, res) => {
+	  const STUDENTId = req.user.id;
+	  console.log('STUDENTId', STUDENTId);
+	  try {
+      const jobList = await APPLICATION.findAll({
+		  where: {
+          STUDENTId,
+		  },
+		  include: [{
+          model: JOB,
+		  }],
+      });
+      res.json(jobList);
+	  } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+	  }
+  },
+);
+
 module.exports = router;

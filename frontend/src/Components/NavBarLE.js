@@ -25,7 +25,7 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-class NavBarLogin extends Component{
+class NavBarLoginLE extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -79,8 +79,8 @@ class NavBarLogin extends Component{
 					<Nav.Link href="/StudentDashboard">Home</Nav.Link>
 					{/* <Nav.Link href="#link">Dashboard</Nav.Link> */}
 					<NavDropdown title="Menu" id="collasible-nav-dropdown">
-						<NavDropdown.Item style={{color:'black'}} href="/StudentProfile">Profile</NavDropdown.Item>
-						<NavDropdown.Item style={{color:'black'}} href="/StudentEvent">Events</NavDropdown.Item>
+						<NavDropdown.Item style={{color:'black'}} href="/PostAJob">Post a Job</NavDropdown.Item>
+						<NavDropdown.Item style={{color:'black'}} href="/PostEvent">Post an Event</NavDropdown.Item>
 						<NavDropdown.Item style={{color:'black'}} href="/StudentRegisteredEvent">Registered Events</NavDropdown.Item>
 						<NavDropdown.Item style={{color:'black'}} href="/StudentAppliedJob">Applied Jobs</NavDropdown.Item>
 						{/* <NavDropdown.Divider />
@@ -100,4 +100,4 @@ class NavBarLogin extends Component{
 
 }
 
-export default NavBarLogin;
+export default NavBarLoginLE;

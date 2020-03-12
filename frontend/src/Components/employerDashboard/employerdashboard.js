@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import cookie, { setRawCookie } from 'react-cookies';
 import {Redirect} from 'react-router';
 import {Link} from 'react-router-dom';
-import NavBarLogin from "../NavBarL";
+import NavBarLoginLE from "../NavBarLE";
 import "./employerdashboard.css";
 import axios from 'axios';
 import {rooturl} from '../../config';
 import Draggable, {DraggableCore} from 'react-draggable';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
  import { Button } from 'react-bootstrap';
 
 
@@ -268,88 +268,10 @@ class EmployerDashboard extends Component{
 
         return(
             <div>
-            <NavBarLogin />
-            {redirectVar}
-            <div className="vertical-nav" id="sidebar">
-            <p className="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Dashboard</p>
-            <ul className="nav flex-column bg-white mb-0">
-                <li className="nav-item">
-                    <a href="/EmployerProfile" class="nav-link text-dark font-italic">
-                    <i className="fa fa-th-large mr-3 text-primary fa-fw"></i>Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/ViewMenu" className="nav-link text-dark font-italic">
-                    <i className="fa fa-th-large mr-3 text-primary fa-fw"></i>Restaurant Menu
-                    </a></li> 
-                    <li className="nav-item">
-                    <a href="/MenuUpdate" className="nav-link text-dark font-italic">
-                    <i class="fa fa-th-large mr-3 text-primary fa-fw"></i>Update Menu
-                    </a></li>
-            </ul>
+				{redirectVar}
+            	<NavBarLoginLE />
             </div>
-            <div class="page-content p-5" id="content">
-            
-            <h4>Your Orders</h4>
-                    <div class="panel-group" id="accordion">
-                    <div class="card-deck">
-            {/* <Draggable>
-            
-            <div class="card">
-            <button class="btn btn-info">Order1</button>
-                <div class="card-body">Content</div>
-            </div>
-            </Draggable> */}
-            
-            </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h4 class="panel-title">
-                                    <button class="btn" data-toggle="collapse" data-parent="#accordion" data-target="#collapse1">Current Job</button>
-                                </h4>
-                            </div>
-                            <div id="collapse1" class="panel-collapse collapse in">
-                            {newOrderDetails}
-                            
-                            </div>
-                        </div>
-                        <div className="panel panel-default">
-                            <div className="panel-heading">
-                                <h4 className="panel-title">
-                                <button className="btn" data-toggle="collapse" data-parent="#accordion" data-target="#collapse2">Past Job</button>
-                                </h4>
-                            </div>
-                            <div id="collapse2" className="panel-collapse collapse">
-                            {otherOrderDetails} 
-                            {/* <table class="table table-hover">
-                                <thead>
-                                </thead>
-                                       
-                             </table> */}
-                            </div>
-                        </div>
-                    </div>
-
-
-            </div>
-
-            {/* <Modal show={this.state.showModal} onHide={this.handleClose}>
-            <Modal.Header closeButton>
-            <Modal.Title>Messages</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{modalMessages}
-            <div>
-            <textarea rows="2" cols="50" name="newMessage" onChange = {this.changeHandler} placeholder="Type Message"></textarea>
-            <Button variant="primary btn-danger"  onClick={this.sendMessages}>Send Message</Button>
-            </div>
-            </Modal.Body>
-            <Modal.Footer>
-            <Button variant="secondary btn-info" onClick={this.handleClose}>Close</Button>
-            
-            </Modal.Footer>
-            </Modal> */}
-
-            </div>
+           
         )
     }
 }

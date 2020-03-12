@@ -11,7 +11,7 @@ class EmployerHome extends Component{
         return (
             <div>
                 
-                <div class="">
+                <div class="masthead">
                 <NavBarE />
                 </div>
             </div>

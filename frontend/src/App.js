@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Main from './Components/Main';
 import {BrowserRouter} from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 class App extends Component {
   
