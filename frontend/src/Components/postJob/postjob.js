@@ -51,6 +51,7 @@ class PostAJob extends Component{
         axios.post(rooturl + "/jobs", data)
         .then(res => {
             if(res.status === 200){
+				this.props.history.push('/EmployerJobs');
                 //this.props.saveProfilePic(rooturl + "/" + file.name);
             }
         })

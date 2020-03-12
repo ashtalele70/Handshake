@@ -13,6 +13,7 @@ import StudentEvent from './studentEvent/event';
 import StudentRegisteredEvent from './studentRegisteredEvent/studentregisteredevents';
 import StudentAppliedJob from './studentAppliedJob/studentappliedjob';
 import PostAJob from './postJob/postjob';
+import EmployerJobs from './employerJobs/employerjobs';
 import cookie from 'react-cookies';
 
 class Main extends Component {
@@ -33,6 +34,7 @@ class Main extends Component {
 				<Route path="/StudentRegisteredEvent" component={StudentRegisteredEvent}/>
 				<Route path="/StudentAppliedJob" component={StudentAppliedJob}/>
 				<Route path="/PostAJob" component={PostAJob}/>
+				<Route path="/EmployerJobs" component={EmployerJobs}/>
             </div>
         )
     }
