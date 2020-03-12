@@ -9,7 +9,7 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 // const auth = require('../middleware/auth');
 
-const { STUDENT } = require('../config/dbConnection');
+const { STUDENT, STUDENT_PROFILE } = require('../config/dbConnection');
 
 // @route     POST /students
 // @desc      Regiter a user
@@ -62,15 +62,19 @@ router.post(
         LAST_NAME,
         EMAIL_ID,
         PASSWORD,
-        PROFILE_PICTURE: avator,
         COLLEGE_NAME,
-      });
+	  });
 
       const salt = await bcrypt.genSalt(10);
 
       user.PASSWORD = await bcrypt.hash(PASSWORD, salt);
 
       await user.save();
+
+	  userP = new STUDENT_PROFILE({
+        STUDENTId : user.id,
+	  });
+	  await userP.save();
 
       const payload = {
         user: {

@@ -390,16 +390,22 @@ router.post('/experience', auth, async (req, res) => {
 //     }
 // });
 
+// @route    POST /studentProfile/profilepic
+// @desc     Create or update user profile profile picture
+// @access   Private
+
 // router.get('/profilepic', auth, async (req, res) => {
 //     try {
-//         const profilepic = await Student.findOne({
+// 		console.log(req.body);
+//         const profilepic = await STUDENT.findOne({
 //             where: {
-//                 student_id: req.student_id,
+//                 id: req.body.studentId,
 //             },
-//         });
-//         if (profilepic) {
-//             return res.status(200).json(profilepic);
-//         }
+// 		});
+// 		//console.log(profilepic);
+//         //if (profilepic) {
+//          res.render(profilepic.PROFILE_PICTURE);
+//         //}
 //     } catch (e) {
 //         return res.status(500).json('Unable to fetch data.');
 //     }
