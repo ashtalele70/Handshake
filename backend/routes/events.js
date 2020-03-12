@@ -33,7 +33,7 @@ router.get(
         }],
       });
 
-      //console.log(eventList);
+      // console.log(eventList);
       res.json(eventList);
 	  } catch (err) {
       console.error(err.message);
@@ -42,29 +42,87 @@ router.get(
   },
 );
 
+// @route     POST /jobs
+// @desc      Get all the jobs for a company
+// @access    Public
+
+router.post(
+  '/', auth,
+  // eslint-disable-next-line consistent-return
+  async (req, res) => {
+		  console.log(req.body);
+	  const {
+      TITLE, POST_DATE, LOCATION, TIME, DESCRIPTION, ELIGIBILITY,
+    } = req.body;
+
+    try {
+      const job = new EVENT({
+		  TITLE,
+		  POST_DATE,
+		  LOCATION,
+		  TIME,
+		  DESCRIPTION,
+		  ELIGIBILITY,
+		  COMPANYId: req.user.id,
+      });
+		  await job.save();
+      res.json(job);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send('Server Error');
+    }
+  },
+);
+
 // @route     GET /registeredEvents
 // @desc      Get all the jobs for a student
 // @access    Public
 router.get(
-	'/registeredEvents', auth,
-  
-	// eslint-disable-next-line consistent-return
-	async (req, res) => {
+  '/registeredEvents', auth,
+
+  // eslint-disable-next-line consistent-return
+  async (req, res) => {
 	  console.log(req.user);
 	  try {
-		const eventList = await REGISTRATION.findAll({
+      const eventList = await REGISTRATION.findAll({
 		  include: [{
-			model: EVENT
+          model: EVENT,
 		  }],
+      });
+
+      // console.log(eventList);
+      res.json(eventList);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  },
+);
+
+// @route     GET /events/employerjobs
+// @desc      Get all the jobs for a company
+// @access    Public
+
+router.get(
+	'/employerevents', auth,
+	// eslint-disable-next-line consistent-return
+	async (req, res) => {
+	  console.log('user', req.user);
+	  const COMPANYId = req.user.id;
+	  console.log('COMPANYId', COMPANYId);
+	  try {
+		const eventList = await EVENT.findAll({
+		  where: {
+			COMPANYId,
+		  },
 		});
-  
-		//console.log(eventList);
+		console.log(eventList);
 		res.json(eventList);
-		} catch (err) {
-		console.error(err.message);
-		res.status(500).send('Server Error');
-		}
-	},
+	  } catch (err) {
+				console.error(err.message);
+				res.status(500).send('Server Error');
+	  }
+			},
   );
 
 module.exports = router;

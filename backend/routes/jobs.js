@@ -42,7 +42,7 @@ router.get(
   },
 );
 
-// @route     GET /jobs
+// @route     POST /jobs
 // @desc      Get all the jobs for a company
 // @access    Public
 
@@ -50,8 +50,7 @@ router.post(
   '/', auth,
   // eslint-disable-next-line consistent-return
   async (req, res) => {
-
-		console.log(req.body);
+    console.log(req.body);
     const {
       TITLE, JOB_TYPE, APP_DEADLINE, POST_DATE, LOCATION, SALARY, DESCRIPTION,
 		  } = req.body;
@@ -64,10 +63,10 @@ router.post(
         POST_DATE,
         LOCATION,
         SALARY,
-		DESCRIPTION,
-		COMPANYId : req.user.id
+        DESCRIPTION,
+        COMPANYId: req.user.id,
 		  });
-		await job.save();
+      await job.save();
       res.json(job);
 	  } catch (err) {
       console.error(err);

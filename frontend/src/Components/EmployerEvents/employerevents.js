@@ -4,11 +4,11 @@ import axios from 'axios';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import NavBarLoginLE from "../NavBarLE";
 import {rooturl} from '../../config';
-import { showAllJobs } from '../../Actions/dashboardAction';
+import { showAllEvents } from '../../Actions/userEventAction';
 
 const mapStateToProps = (state) => {
     return {
-        alljobs: state.userDashboardData.alljobs,
+        allevents: state.studentEventData.allevents,
 		// filterevents: state.studentEventData.filterevents,
 		// showevent: state.studentEventData.showevent,
     };
@@ -16,13 +16,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        showAllJobs: (data) => dispatch(showAllJobs(data)),
+        showAllEvents: (data) => dispatch(showAllEvents(data)),
 		// showFilterEvents: (data) => dispatch(showFilterEvents(data)),
 		// showSelectedEvent: (data) => dispatch(showSelectedEvent(data)),
     }
 }
 
-class EmployerJobs extends Component {
+class EmployerEvents extends Component {
 
 	// selectedEvent = {};
 
@@ -31,15 +31,15 @@ class EmployerJobs extends Component {
 		// this.search = this.search.bind(this);
     }
 	componentDidMount() {
-        this.getJobs();
+        this.getEvents();
 	}
-	getJobs = () => {
+	getEvents = () => {
         axios.defaults.headers.common['x-auth-token'] = localStorage.getItem('token');
-        axios.get(rooturl  + "/jobs/employerjobs")
+        axios.get(rooturl  + "/events/employerevents")
         .then(res => {
             if(res.status === 200){
                 if(res.data){
-                    this.props.showAllJobs(res.data);
+                    this.props.showAllEvents(res.data);
                 }
             }
         })
@@ -85,35 +85,32 @@ class EmployerJobs extends Component {
 	// }
 
     render() {
-		let jobs = this.props.alljobs;
+		let events = this.props.allevents;
 		// if(this.props.filterevents && this.props.filterevents.length){
 		// 	events = this.props.filterevents;
 		// }
-		const list = Object.keys(jobs).map(key =>
+		const list = Object.keys(events).map(key =>
 			<Card  className = "mt-2 w-100" >
 				
 				<Card.Body>
-				<Card.Title>Postion : {jobs[key].TITLE}</Card.Title>
-				<Card.Text id="type">
-					{jobs[key].JOB_TYPE} 
+				<Card.Title>Event Name : {events[key].TITLE}</Card.Title>
+				<Card.Text id="eventtime">
+				Event Date :	{events[key].POST_DATE} 
 				</Card.Text>
-				<Card.Text id="type">
-					{jobs[key].APP_DEADLINE} 
+				<Card.Text id="time">
+				Event Time :	{events[key].TIME} 
 				</Card.Text>
 				<Card.Text id="location">
-					{jobs[key].LOCATION}
+				Event Venue :	{events[key].LOCATION}
 				</Card.Text>
-				<Card.Text id="salary">
-					${jobs[key].SALARY} / hour
+				<Card.Text id="eligibility">
+				Eligibility for event :{events[key].ELIGIBILITY} 
 				</Card.Text>
-				<Card.Text id="posting_date">
-					{jobs[key].POST_DATE}
-				</Card.Text>
-				<Card.Text id="description" style={{display: 'none'}}>
-					{jobs[key].DESCRIPTION}
-				</Card.Text>           
+				<Card.Text id="description">
+				DEscription :	{events[key].DESCRIPTION}
+				</Card.Text>       
 				</Card.Body>
-				<Button variant="primary" onClick={() => this.showSelectedEvent(true, jobs[key])}>View Applicants</Button>
+				{/* <Button variant="primary" onClick={() => this.showSelectedEvent(true, events[key])}>View Event</Button> */}
 			</Card>
 		);
 
@@ -122,7 +119,7 @@ class EmployerJobs extends Component {
 			
             <Container className="mt-5 mb-5">
 				<NavBarLoginLE />
-				<h1>List of Jobs</h1>
+				<h1>List of Events</h1>
                 {/* <Form onSubmit={this.search}>
             	<Form.Row>
                 <Form.Group as={Col} md="4" controlId="TITLE">
@@ -148,4 +145,4 @@ class EmployerJobs extends Component {
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmployerJobs);
+export default connect(mapStateToProps, mapDispatchToProps)(EmployerEvents);

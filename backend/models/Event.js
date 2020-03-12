@@ -20,7 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     EVENT_TYPE: {
       type: DataTypes.STRING,
-      required: true,
+    },
+    ELIGIBILITY: {
+      type: DataTypes.STRING,
+    },
+    TIME: {
+      type: DataTypes.STRING,
     },
   });
   EVENT.hasMany(REGISTRATION(sequelize, DataTypes));
