@@ -27,3 +27,12 @@ export const showSelectedJob = (data) => {
         }
     }
 }
+
+export const uploadResume = (data) => {
+    return {
+        type : type.UPLOAD_RESUME,
+        payload : {
+            data
+        }
+    }
+}

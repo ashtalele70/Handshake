@@ -78,10 +78,9 @@ class NavBarLogin extends Component{
 					<Nav className="mr-auto">
 					<Nav.Link href="/StudentDashboard">Home</Nav.Link>
 					{/* <Nav.Link href="#link">Dashboard</Nav.Link> */}
-					<NavDropdown title="	" id="basic-nav-dropdown">
-						<NavDropdown.Item href="/StudentProfile">Profile</NavDropdown.Item>
-						<NavDropdown.Item href="#action/3.2">Job Posting</NavDropdown.Item>
-						<NavDropdown.Item href="#action/3.3">Student</NavDropdown.Item>
+					<NavDropdown title="Menu" id="collasible-nav-dropdown">
+						<NavDropdown.Item style={{color:'black'}} href="/StudentProfile">Profile</NavDropdown.Item>
+						<NavDropdown.Item style={{color:'black'}} href="/StudentEvent">Events</NavDropdown.Item>
 						{/* <NavDropdown.Divider />
 						<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item> */}
 					</NavDropdown>

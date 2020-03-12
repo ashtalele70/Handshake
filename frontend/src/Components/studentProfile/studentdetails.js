@@ -114,7 +114,7 @@ class StudentDetails extends Component{
 			content = (
 				<div>
 					<Row className="justify-content-center">
-						<Card.Title>{this.props.studentDetails ? (this.props.studentDetails.data.STUDENT.FIRST_NAME + ' ' + this.props.studentDetails.data.STUDENT.FIRST_NAME) : ''}</Card.Title>
+						<Card.Title>{this.props.studentDetails ? (this.props.studentDetails.data.STUDENT.FIRST_NAME + ' ' + this.props.studentDetails.data.STUDENT.LAST_NAME) : ''}</Card.Title>
 					</Row>
 					{/* <Row className="justify-content-center">
 						<Card.Text>

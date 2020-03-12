@@ -1,4 +1,4 @@
-//const APPLICATION = require('./Application');
+const REGISTRATION = require('./Registration');
 
 module.exports = (sequelize, DataTypes) => {
   const EVENT = sequelize.define('EVENT', {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       required: true,
     },
   });
-  //EVENT.hasMany(APPLICATION(sequelize, DataTypes));
+  EVENT.hasMany(REGISTRATION(sequelize, DataTypes));
 
   return EVENT;
 };

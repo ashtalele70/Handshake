@@ -22,6 +22,7 @@ const JOB = require('../models/Job')(connectDB, Sequelize);
 const APPLICATION = require('../models/Application')(connectDB, Sequelize);
 const SKILLSET = require('../models/Skillset')(connectDB, Sequelize);
 const EVENT = require('../models/Event')(connectDB, Sequelize);
+const REGISTRATION = require('../models/Registration')(connectDB, Sequelize);
 
 connectDB.sync({ alter: false });
 
@@ -33,5 +34,7 @@ JOB.belongsTo(COMPANY);
 EVENT.belongsTo(COMPANY);
 APPLICATION.belongsTo(JOB);
 APPLICATION.belongsTo(STUDENT);
+REGISTRATION.belongsTo(EVENT);
+REGISTRATION.belongsTo(STUDENT);
 
-module.exports = { STUDENT, STUDENT_PROFILE, STUDENT_EDUCATION, STUDENT_EXPERIENCE, COMPANY, JOB, APPLICATION, SKILLSET, EVENT };
+module.exports = { STUDENT, STUDENT_PROFILE, STUDENT_EDUCATION, STUDENT_EXPERIENCE, COMPANY, JOB, APPLICATION, SKILLSET, EVENT, REGISTRATION };

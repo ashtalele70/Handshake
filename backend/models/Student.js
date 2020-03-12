@@ -1,5 +1,6 @@
 const STUDENT_PROFILE = require('./StudentProfile');
 const APPLICATION = require('./Application');
+const REGISTRATION = require('./Registration');
 
 module.exports = (sequelize, DataTypes) => {
   const STUDENT = sequelize.define('STUDENT', {
@@ -20,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   });
   STUDENT.hasOne(STUDENT_PROFILE(sequelize, DataTypes));
   STUDENT.hasMany(APPLICATION(sequelize, DataTypes));
+  STUDENT.hasMany(REGISTRATION(sequelize, DataTypes));
 
   return STUDENT;
 };

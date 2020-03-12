@@ -38,6 +38,8 @@ app.use('/companies', require('./routes/companies'));
 app.use('/jobs', require('./routes/jobs'));
 app.use('/authc', require('./routes/authc'));
 app.use('/events', require('./routes/events'));
+app.use('/applications', require('./routes/applications'));
+app.use('/registrations', require('./routes/registrations'));
 
 
 const PORT = process.env.PORT || 3000;

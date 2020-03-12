@@ -15,3 +15,7 @@ export const ENABLE_SAVE = 'ENABLE_SAVE'
 export const ALL_JOBS = 'ALL_JOBS'
 export const FILTER_JOBS = 'FILTER_JOBS';
 export const SHOW_SELECTED_JOB = 'SHOW_SELECTED_JOB';
+export const ALL_EVENTS = 'ALL_EVENTS'
+export const FILTER_EVENTS = 'FILTER_EVENTS';
+export const SHOW_SELECTED_EVENT = 'SHOW_SELECTED_EVENT';
+export const UPLOAD_RESUME = 'UPLOAD_RESUME';

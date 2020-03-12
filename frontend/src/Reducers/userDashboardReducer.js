@@ -3,7 +3,8 @@ import * as types from '../Types/types';
 const initialState = {
     alljobs: [],
 	filterjobs: [],
-	showjob: false
+	showjob: false,
+	resume: "",
 }
 
 export default function (state = initialState, action) {
@@ -19,6 +20,10 @@ export default function (state = initialState, action) {
 		case types.SHOW_SELECTED_JOB :
 		return Object.assign({}, state, {
 			showjob : action.payload.data
+		})
+		case types.UPLOAD_RESUME :
+		return Object.assign({}, state, {
+			resume : action.payload.data
 		})
         default: 
             return state;

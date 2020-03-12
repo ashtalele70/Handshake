@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 		type: DataTypes.STRING,
 	  },
 	  YEAR_OF_PASSING: {
-		type: DataTypes.DATE,
+		type: DataTypes.INTEGER,
 	  },
 	});
 	return STUDENT_EDUCATION;

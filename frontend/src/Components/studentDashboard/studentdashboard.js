@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, Button, Card} from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Toast } from 'react-bootstrap';
 import axios from 'axios';
-import { PATH } from '../../config';
 import { connect } from 'react-redux';
 import {rooturl} from '../../config';
 import NavBarLogin from "../NavBarL";
-import { showAllJobs, showFilterJobs, showSelectedJob } from '../../Actions/dashboardAction';
+import { showAllJobs, showFilterJobs, showSelectedJob, uploadResume, applyJob } from '../../Actions/dashboardAction';
 
 const mapStateToProps = (state) => {
     return {
         alljobs: state.userDashboardData.alljobs,
 		filterjobs: state.userDashboardData.filterjobs,
-		showjob: state.userDashboardData.showjob
+		showjob: state.userDashboardData.showjob,
+		resume: state.userDashboardData.resume,
     };
 }
 
@@ -19,7 +19,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         showAllJobs: (data) => dispatch(showAllJobs(data)),
 		showFilterJobs: (data) => dispatch(showFilterJobs(data)),
-		showSelectedJob: (data) => dispatch(showSelectedJob(data)) 
+		showSelectedJob: (data) => dispatch(showSelectedJob(data)),
+		uploadResume: (data) => dispatch(uploadResume(data))
     }
 }
 
@@ -28,14 +29,15 @@ class StudentDashboard extends Component {
 	selectedSearchfilters = [];
 	selectedJob = {};
 	
-	constructor() {
-		super();
-		this.search = this.search.bind(this);
-		// this.jobDesc = this.jobDesc.bind(this);
-	}
+	// constructor() {
+	// 	super();
+	// 	this.saveResume = this.saveResume.bind(this);
+	// 	this.search = this.search.bind(this);
+	// }
 
     componentDidMount() {
-        this.getJobs();
+		this.getJobs();
+		this.saveResume = this.saveResume.bind(this);
 	}
 
 
@@ -79,7 +81,34 @@ class StudentDashboard extends Component {
 	showSelectedJob = (action, job) => {
         this.props.showSelectedJob(action);
         this.selectedJob = job;
-    }
+	}
+	
+	saveResume = (event, jobId) => {        
+		event.preventDefault();
+		const data = new FormData();
+		const file = event.target.elements[0].files[0];
+		data.append('resume', file);
+		data.append('id', jobId);
+		axios.post(rooturl + "/applications", data, {
+			headers: {
+				'content-type':'multipart/form-data'
+			}
+		})
+		.then(res => {
+			if(res.status === 200){
+				//this.jobIdApplied = jobId;
+				this.uploadResume(file);
+			}
+		})
+		.catch(err=>{
+			//this.props.authFail(err.response.data.msg);
+		})        
+	}
+
+	uploadResume = (file) => {
+		this.props.uploadResume(rooturl + "/" + file.name);
+		this.props.showSelectedJob(false);
+	}
 
     render() {
 		let jobs = this.props.alljobs;
@@ -87,12 +116,12 @@ class StudentDashboard extends Component {
 			jobs = this.props.filterjobs;
 		}
 		const list = Object.keys(jobs).map(key =>
-			<Card  className = "mt-2 w-100" >
+			<Card  className = "mt-2" >
 				
 				<Card.Body>
 				<Card.Title>{jobs[key].TITLE}</Card.Title>
 				<Card.Text id="type">
-					{jobs[key].JOB_TYPE}
+					{jobs[key].JOB_TYPE}                  {this.selectedJob.id ===jobs[key].id  && this.props.resume&&<p style={{color: "Green", fontWeight: "900", textAlign: "right"}}>Applied</p>}
 				</Card.Text>
 				<Card.Text id="location">
 					{jobs[key].LOCATION}
@@ -125,13 +154,35 @@ class StudentDashboard extends Component {
 				<Card.Text>Date Posted: {this.selectedJob.POST_DATE}</Card.Text>
 				<Card.Text>Salary: ${this.selectedJob.SALARY}/hr</Card.Text>
 			</Card.Body>
-
-			<Button className="w-25" variant="primary">Apply to this job</Button>
+				<Form onSubmit={(e) => { this.saveResume(e, this.selectedJob.id) }}>
+					<Form.Control type="file" id="file" name="file" multiple />
+					<Button className="w-25"  type="submit" variant="primary">Apply to this job</Button>
+				</Form>
+			{/* <Button className="w-25" variant="primary"  >Apply to this job</Button> */}
 			</Card>
 		)
 		}
+
+		// let toast;
+
+		// toast=(
+		// 	<Toast  show={this.props.resume} delay={3000} autohide>
+        //   <Toast.Header>
+        //     {/* <img
+        //       src="holder.js/20x20?text=%20"
+        //       className="rounded mr-2"
+        //       alt=""
+        //     /> */}
+        //     <strong className="mr-auto">Bootstrap</strong>
+        //     <small>11 mins ago</small>
+        //   </Toast.Header>
+        //   <Toast.Body>Woohoo, you're reading this text in a Toast!</Toast.Body>
+        // </Toast>
+		// )
+
+
         return (
-            <Container className="mt-5 mb-5" as={Col}>
+            <Container  as={Col}>
 				<NavBarLogin />
         <Form onSubmit={this.search}>
             <Form.Row>
@@ -171,6 +222,7 @@ class StudentDashboard extends Component {
 		<Row>
                     <Col md={4}>{list}</Col>
 					<Col >{jobDesc}</Col>
+					
 				</Row>
             </Container>  
         )
