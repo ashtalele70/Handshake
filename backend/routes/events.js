@@ -6,9 +6,9 @@ const router = express.Router();
 // const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 
-const { EVENT, COMPANY } = require('../config/dbConnection');
+const { EVENT, COMPANY, REGISTRATION } = require('../config/dbConnection');
 
-// @route     GET /jobs
+// @route     GET /events
 // @desc      Get all the jobs for a student
 // @access    Public
 router.get(
@@ -41,5 +41,30 @@ router.get(
 	  }
   },
 );
+
+// @route     GET /registeredEvents
+// @desc      Get all the jobs for a student
+// @access    Public
+router.get(
+	'/registeredEvents', auth,
+  
+	// eslint-disable-next-line consistent-return
+	async (req, res) => {
+	  console.log(req.user);
+	  try {
+		const eventList = await REGISTRATION.findAll({
+		  include: [{
+			model: EVENT
+		  }],
+		});
+  
+		//console.log(eventList);
+		res.json(eventList);
+		} catch (err) {
+		console.error(err.message);
+		res.status(500).send('Server Error');
+		}
+	},
+  );
 
 module.exports = router;

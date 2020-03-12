@@ -81,6 +81,7 @@ class NavBarLogin extends Component{
 					<NavDropdown title="Menu" id="collasible-nav-dropdown">
 						<NavDropdown.Item style={{color:'black'}} href="/StudentProfile">Profile</NavDropdown.Item>
 						<NavDropdown.Item style={{color:'black'}} href="/StudentEvent">Events</NavDropdown.Item>
+						<NavDropdown.Item style={{color:'black'}} href="/StudentRegisteredEvent">Registered Events</NavDropdown.Item>
 						{/* <NavDropdown.Divider />
 						<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item> */}
 					</NavDropdown>
