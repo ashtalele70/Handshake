@@ -7,9 +7,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
-// const auth = require('../middleware/auth');
+const auth = require('../middleware/auth');
 
-const { STUDENT, STUDENT_PROFILE } = require('../config/dbConnection');
+const { STUDENT, STUDENT_PROFILE, SKILLSET } = require('../config/dbConnection');
 
 // @route     POST /students
 // @desc      Regiter a user
@@ -37,8 +37,8 @@ router.post(
 
     const {
       FIRST_NAME, LAST_NAME, EMAIL_ID, PASSWORD, COLLEGE_NAME,
-	} = req.body;
-	
+    } = req.body;
+
     try {
       console.log(EMAIL_ID);
       let user = await STUDENT.findOne({
@@ -72,7 +72,7 @@ router.post(
       await user.save();
 
 	  userP = new STUDENT_PROFILE({
-        STUDENTId : user.id,
+        STUDENTId: user.id,
 	  });
 	  await userP.save();
 
@@ -93,6 +93,42 @@ router.post(
           res.json({ token });
         },
       );
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    }
+  },
+);
+
+
+// @route     GET /students/all
+// @desc      Get all the jobs for a student
+// @access    Public
+router.get(
+  '/all', auth,
+
+  // eslint-disable-next-line consistent-return
+  async (req, res) => {
+	  // const errors = validationResult(req);
+	  // if (!errors.isEmpty()) {
+	  //   return res.status(400).json({ errors: errors.array() });
+	  // }
+
+	  // const {
+	  //   FIRST_NAME, LAST_NAME, EMAIL_ID, PASSWORD, COLLEGE_NAME,
+	  // } = req.body;
+	  console.log(req.user);
+	  try {
+      const studentList = await STUDENT.findAll({
+        include: [{
+          model: STUDENT_PROFILE,
+          include: [{
+            model: SKILLSET,
+          }],
+
+			  }],
+      });
+      res.json(studentList);
     } catch (err) {
       console.error(err.message);
       res.status(500).send('Server Error');

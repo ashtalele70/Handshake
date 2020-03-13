@@ -7,6 +7,7 @@ import { signout } from '../Actions/loginAction';
 import { connect } from 'react-redux';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
+
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -83,6 +84,7 @@ class NavBarLoginLE extends Component{
 						<NavDropdown.Item style={{color:'black'}} href="/PostAEvent">Post an Event</NavDropdown.Item>
 						<NavDropdown.Item style={{color:'black'}} href="/EmployerJobs">View Jobs</NavDropdown.Item>
 						<NavDropdown.Item style={{color:'black'}} href="/EmployerEvents">View Events</NavDropdown.Item>
+						<NavDropdown.Item style={{color:'black'}} href="/EmployerStudentsTab">View Students</NavDropdown.Item>
 						{/* <NavDropdown.Divider />
 						<NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item> */}
 					</NavDropdown>

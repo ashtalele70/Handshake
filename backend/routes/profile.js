@@ -25,7 +25,7 @@ const dateformat = require('dateformat');
 
 const fs = require('fs');
 const {
-  STUDENT, STUDENT_PROFILE, STUDENT_EDUCATION, STUDENT_EXPERIENCE, SKILLSET
+  STUDENT, STUDENT_PROFILE, STUDENT_EDUCATION, STUDENT_EXPERIENCE, SKILLSET,
 } = require('../config/dbConnection');
 
 
@@ -49,6 +49,29 @@ router.get('/current', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
+  }
+});
+
+// @route    GET /studentProfile/current/studentfromemp
+// @desc     Get current users profile
+// @access   Private
+router.get('/current/studentfromemp', auth, async (req, res) => {
+  try {
+	  const studentProfile = await STUDENT_PROFILE.findOne({
+      include: [{
+		  model: STUDENT,
+		  where: { id: req.body.STUDENTId },
+      },
+      ],
+
+	  });
+	  if (!studentProfile) {
+      return res.status(400).json({ msg: 'There is no profile for this student' });
+	  }
+	  res.json(studentProfile);
+  } catch (err) {
+	  console.error(err.message);
+	  res.status(500).send('Server Error');
   }
 });
 
@@ -131,56 +154,88 @@ router.post(
 );
 
 router.get('/skillset', auth, async (req, res) => {
-    try {
+  try {
+    const studentProfile = await STUDENT_PROFILE.findOne({
+      include: [{
+        model: STUDENT,
+        where: { id: req.user.id },
+      },
+      ],
 
-		const studentProfile = await STUDENT_PROFILE.findOne({
-			include: [{
-					model: STUDENT,
-					where: { id: req.user.id },
-			},
-			],
-  
-				});
+    });
 
-        const skillset = await SKILLSET.findAll({
-			
-			where: {
-                STUDENTPROFILEId: studentProfile.id,
-            },
-        });
-        if (skillset) {
-            const skills = [];
-            skillset.forEach((skillObj) => {
-                skills.push(skillObj.SKILL);
-            })
-            return res.status(200).json(skills);
-        }
-    } catch (e) {
-        return res.status(500).json('Unable to fetch data.');
+    const skillset = await SKILLSET.findAll({
+
+      where: {
+        STUDENTPROFILEId: studentProfile.id,
+      },
+    });
+    if (skillset) {
+      const skills = [];
+      skillset.forEach((skillObj) => {
+        skills.push(skillObj.SKILL);
+      });
+      return res.status(200).json(skills);
     }
+  } catch (e) {
+    return res.status(500).json('Unable to fetch data.');
+  }
+});
+
+// @route    GET /studentProfile/skillset/studentfromemp
+// @desc     Get current users profile
+// @access   Private
+
+router.get('/skillset/studentfromemp', auth, async (req, res) => {
+  try {
+	  const studentProfile = await STUDENT_PROFILE.findOne({
+      include: [{
+		  model: STUDENT,
+		  where: { id: req.body.STUDENTId },
+      },
+      ],
+
+	  });
+
+	  const skillset = await SKILLSET.findAll({
+
+      where: {
+		  STUDENTPROFILEId: studentProfile.id,
+      },
+	  });
+	  if (skillset) {
+      const skills = [];
+      skillset.forEach((skillObj) => {
+		  skills.push(skillObj.SKILL);
+      });
+      return res.status(200).json(skills);
+	  }
+  } catch (e) {
+	  return res.status(500).json('Unable to fetch data.');
+  }
 });
 
 router.post('/skillset', auth, async (req, res) => {
-    try {
-		const studentProfile = await STUDENT_PROFILE.findOne({
-			include: [{
-					model: STUDENT,
-					where: { id: req.user.id },
-			},
-			],
-  
-				});
+  try {
+    const studentProfile = await STUDENT_PROFILE.findOne({
+      include: [{
+        model: STUDENT,
+        where: { id: req.user.id },
+      },
+      ],
 
-				console.log("req.body.skill",req.body.skill);
-        const skillEntry = new SKILLSET({
-            SKILL: req.body.skill,
-            STUDENTPROFILEId: studentProfile.id,
-        });
-        await skillEntry.save();
-        res.status(200).json('Successful');
-    } catch (e) {
-        return res.status(500).json('Unable to save data.');
-    }
+    });
+
+    console.log('req.body.skill', req.body.skill);
+    const skillEntry = new SKILLSET({
+      SKILL: req.body.skill,
+      STUDENTPROFILEId: studentProfile.id,
+    });
+    await skillEntry.save();
+    res.status(200).json('Successful');
+  } catch (e) {
+    return res.status(500).json('Unable to save data.');
+  }
 });
 
 
@@ -213,6 +268,39 @@ router.get('/education', auth, async (req, res) => {
     }
   } catch (e) {
     return res.status(500).json('Unable to fetch data.');
+  }
+});
+
+
+// @route    GET /studentProfile/education/studentfromemp
+// @desc     Get current users profile
+// @access   Private
+
+router.get('/education/studentfromemp', auth, async (req, res) => {
+  try {
+    console.log('called');
+	  const studentProfile = await STUDENT_PROFILE.findOne({
+      include: [{
+        model: STUDENT,
+        where: { id: req.body.STUDENTId },
+      },
+      ],
+
+    });
+
+	  console.log('req.user.id', req.user.id);
+	  const studentEducation = await STUDENT_EDUCATION.findAll({
+      include: [{
+		  model: STUDENT_PROFILE,
+		  where: { id: studentProfile.id },
+      },
+      ],
+	  });
+	  if (studentEducation) {
+      return res.status(200).json(studentEducation);
+	  }
+  } catch (e) {
+	  return res.status(500).json('Unable to fetch data.');
   }
 });
 
@@ -294,8 +382,8 @@ router.get('/experience', auth, async (req, res) => {
         where: { id: studentProfile.id },
 				  },
 				  ],
-	});
-	console.log("studentExperience",studentExperience);
+    });
+    console.log('studentExperience', studentExperience);
     if (studentExperience) {
 		  return res.status(200).json(studentExperience);
     }
@@ -304,6 +392,39 @@ router.get('/experience', auth, async (req, res) => {
     return res.status(500).json('Unable to fetch data.');
 	  }
 });
+
+// @route    GET /studentProfile/experience/studentfromemp
+// @desc     Get current users profile
+// @access   Private
+
+router.get('/experience/studentfromemp', auth, async (req, res) => {
+	try {
+		const studentProfile = await STUDENT_PROFILE.findOne({
+			  include: [{
+					  model: STUDENT,
+					  where: { id: req.body.STUDENTId },
+			  },
+			  ],
+	
+				  });
+	
+		console.log('req.user.id', req.user.id);
+		const studentExperience = await STUDENT_EXPERIENCE.findAll({
+			  include: [{
+			model: STUDENT_PROFILE,
+			where: { id: studentProfile.id },
+					  },
+					  ],
+		});
+		console.log('studentExperience', studentExperience);
+		if (studentExperience) {
+			  return res.status(200).json(studentExperience);
+		}
+		  } catch (e) {
+			  console.log(e);
+		return res.status(500).json('Unable to fetch data.');
+		  }
+  });
 
 // @route    POST /studentProfile/experience
 // @desc     Create or update user profile experience

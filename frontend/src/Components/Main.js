@@ -15,7 +15,9 @@ import StudentAppliedJob from './studentAppliedJob/studentappliedjob';
 import PostAJob from './postJob/postjob';
 import PostAEvent from './postEvent/postevent';
 import EmployerJobs from './employerJobs/employerjobs';
-import EmployerEvents from './EmployerEvents/employerevents'
+import EmployerEvents from './EmployerEvents/employerevents';
+import EmployerStudentsTab from './employerStudentsTab/employerstudentstab';
+
 import cookie from 'react-cookies';
 
 class Main extends Component {
@@ -39,6 +41,7 @@ class Main extends Component {
 				<Route path="/PostAEvent" component={PostAEvent}/>
 				<Route path="/EmployerJobs" component={EmployerJobs}/>
 				<Route path="/EmployerEvents" component={EmployerEvents}/>
+				<Route path="/EmployerStudentsTab" component={EmployerStudentsTab}/>
 				
             </div>
         )

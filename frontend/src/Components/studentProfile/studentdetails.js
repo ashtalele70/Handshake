@@ -5,7 +5,7 @@ import NavBar from "../NavBar";
 import { connect } from 'react-redux'; 
 import axios from 'axios';
 import {rooturl} from '../../config';
-import { Card, Image, Button, Row, Col, Form } from 'react-bootstrap';
+import { Card, Image, Button, Row, Col, Form} from 'react-bootstrap';
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faCamera } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -170,8 +170,8 @@ class StudentDetails extends Component{
 						</Row> */}
 						<Row className="mt-2">
 							<Col>
-								<Button type="submit" variant="success">Save</Button>
-								<Button type="button" className="ml-2" variant="danger" onClick={this.props.changeMode}>Cancel</Button>
+								<Button type="submit" >Save</Button>
+								<Button type="button" className="ml-2" onClick={this.props.changeMode}>Cancel</Button>
 							</Col>
 						</Row>
 					</Form>

@@ -26,8 +26,9 @@ router.post('/', upload.single('resume'), auth, async (req, res) => {
         STUDENTId: req.user.id,
         JOBId: req.body.id,
       },
-    });
-    if (appEntry) {
+	});
+	console.log("appEntry", appEntry);
+    if (appEntry && req.file.filename) {
       await appEntry.update({
         RESUME: req.file.filename,
       });
@@ -47,6 +48,29 @@ router.post('/', upload.single('resume'), auth, async (req, res) => {
   }
 });
 
+// @route     POST /applications/updateStatus
+// @desc      Get all the jobs for a company
+// @access    Public
+
+router.post('/updateStatus', auth, async (req, res) => {
+	try {
+	  const appEntry = await APPLICATION.findOne({
+		where: {
+		  id: req.body.applicationId,
+		},
+	  });
+	  console.log("appEntry", appEntry);
+	 if (appEntry && req.body.applicationId) {
+		await appEntry.update({
+		  STATUS: req.body.status,
+			});
+	  } 
+	  res.status(200).json('Successful');
+	} catch (e) {
+	  return res.status(500).json('Unable to save data.');
+	}
+  });
+
 // @route     GET /applications/students
 // @desc      Get all the jobs for a company
 // @access    Public
@@ -55,12 +79,12 @@ router.get(
   '/students', auth,
   // eslint-disable-next-line consistent-return
   async (req, res) => {
-    const STUDENTId = req.body.id;
+    const STUDENTId = req.query.id;
     console.log('STUDENTId', STUDENTId);
     try {
       const jobList = await APPLICATION.findAll({
         where: {
-          JOBId: req.body.id,
+          JOBId: req.query.id,
         },
         include: [{
 		  model: JOB,
