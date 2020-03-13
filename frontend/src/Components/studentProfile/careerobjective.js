@@ -169,8 +169,8 @@ class CareerObjective extends Component{
 					<FontAwesomeIcon icon={faEdit} onClick={this.enableCareerObj} />
                     <div class="form-group">
                     <label class="control-label col-sm-2" for="obj"></label>
-                    <div class="col-sm-10">
-                        <input type="text" value={this.props.studentDetails.data.STUDENT.CAREER_OBJECTIVE} class="form-control" id="obj"  placeholder="Career Objective" name="obj" disabled  />
+                    <div >
+                        <textarea type="text" value={this.props.studentDetails.data.STUDENT.CAREER_OBJECTIVE} class="form-control" id="obj"  placeholder="Career Objective" name="obj" disabled  />
 						{/* <FontAwesomeIcon icon={faEdit} onClick={handleShow} /> */}
                     </div>
                     </div>

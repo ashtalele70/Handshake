@@ -184,7 +184,7 @@ class StudentDetails extends Component{
 				<Card.Body>
 				<Row><Button variant="link" style={{paddingLeft: '300px'}} onClick={this.props.changeMode}><FontAwesomeIcon icon={faEdit} /></Button></Row>
 				<Row className="justify-content-center">
-					<Image src={this.props.profile_pic} width="100"
+					<Image src={this.props.profile_pic}  className="w-50"
 						height="100" roundedCircle/>
 				</Row>
 				{content}
